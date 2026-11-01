@@ -5,7 +5,6 @@
   "modSha256": {
     "emi-1.1.24-e7edb3a+26.3+neoforge.jar": "a74ffcc975700740b16169e96ed179c88fc121a41f84345c34ed6e4f513296db",
     "iris-neoforge-1.11.7+mc26.3.jar": "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93",
-    "lanmc-world-menu-1.0.0.jar": "d90bdbccacc6db616db335ac02e87815c7aff828158a58d030642a6c11db43b4",
     "sodium-neoforge-0.9.3-beta.1+mc26.3.jar": "2d6dc7b223f93ce5c5fcedbddacdeb175c1e65484a5bc115e954465aebc8291f"
   },
   "mappings": [

@@ -1,6 +1,5 @@
 {
   "emi": "https://www.curseforge.com/minecraft/mc-mods/emi-unofficial-port-unstable",
   "iris": "https://www.curseforge.com/minecraft/mc-mods/irisshaders",
-  "sodium": "https://www.curseforge.com/minecraft/mc-mods/sodium",
-  "lanmc_world_menu": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/world-policy"
+  "sodium": "https://www.curseforge.com/minecraft/mc-mods/sodium"
 }

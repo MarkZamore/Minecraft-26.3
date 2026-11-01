@@ -5,6 +5,11 @@
       "path": "mods/emi-1.1.24-b60b8f8+26.2+neoforge.jar",
       "sizeBytes": 1107376,
       "sha256": "72e4e63f3ba39c149d15681a864282c116d3cc064e978f0848958cd1bf71058e"
+    },
+    {
+      "path": "mods/lanmc-world-menu-1.0.0.jar",
+      "sizeBytes": 5569,
+      "sha256": "d90bdbccacc6db616db335ac02e87815c7aff828158a58d030642a6c11db43b4"
     }
   ]
 }

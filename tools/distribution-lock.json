@@ -53,19 +53,6 @@
         "sha512": "92cdb344cb8049993685e3d81498411d4e6965a8f054c912a297bfe550937ed4792b7c1cb4efea5b5ac9c0e6c32aea777389207e481f008ce6f176b5ae6aab93"
       },
       "role": "required-iris-renderer"
-    },
-    {
-      "path": "mods/lanmc-world-menu-1.0.0.jar",
-      "sizeBytes": 5569,
-      "sha256": "d90bdbccacc6db616db335ac02e87815c7aff828158a58d030642a6c11db43b4",
-      "modIds": [
-        "lanmc_world_menu"
-      ],
-      "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/world-policy",
-      "releaseType": "release",
-      "sourcePath": "tools/world-policy/src",
-      "role": "client-world-menu-policy",
-      "clientOnly": true
     }
   ]
 }
