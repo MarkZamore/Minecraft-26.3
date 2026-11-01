@@ -27,6 +27,21 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      # The policy is part of the pack, including after a Minecraft upgrade.
+      # Recompile and probe the actual declared runtime before publishing it.
+      - name: Check the world menu policy against the declared runtime
+        run: |
+          mkdir -p "$RUNNER_TEMP/world-menu-policy"
+          python -B tools/world-policy/build.py --output "$RUNNER_TEMP/world-menu-policy/lanmc-world-menu-1.0.0.jar"
+          cmp mods/lanmc-world-menu-1.0.0.jar "$RUNNER_TEMP/world-menu-policy/lanmc-world-menu-1.0.0.jar"
+          python -B tools/world-policy/verify_native.py --jar mods/lanmc-world-menu-1.0.0.jar
+
       - name: Check the controls preset
         if: ${{ hashFiles('launcher/controls-preset.txt') != '' }}
         run: |
@@ -41,6 +56,7 @@ jobs:
         run: |
           python -B -m unittest discover -s tools -p test_pack_library.py
           python -B -m unittest discover -s tools -p test_manifest_upgrade.py
+          python -B -m unittest discover -s tools -p test_world_menu_policy.py
           python tools/generate_manifest.py --pack . --out dist --verify-only
 
       - name: Publish pack-latest release

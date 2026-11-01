@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "policyId": "lanmc.world-menu",
+  "modId": "lanmc_world_menu",
+  "modVersion": "1.0.0",
+  "artifactPath": "mods/lanmc-world-menu-1.0.0.jar",
+  "sourceProject": "MarkZamore/Minecraft-26.3",
+  "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/world-policy",
+  "screen": "net.minecraft.client.gui.screens.PauseScreen",
+  "translationKey": "options.worldOptions.button",
+  "closeAfterInitScreen": "net.minecraft.client.gui.screens.WorldOptionsScreen",
+  "clientOnly": true
+}

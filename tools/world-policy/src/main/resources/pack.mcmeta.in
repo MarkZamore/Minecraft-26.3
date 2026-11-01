@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "description": "World Menu Policy",
+    "min_format": @MIN_FORMAT@,
+    "max_format": @MAX_FORMAT@
+  }
+}

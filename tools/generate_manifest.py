@@ -39,6 +39,7 @@ import re
 import shutil
 import sys
 import pathlib
+import tomllib
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -55,6 +56,20 @@ ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 ZIP_COMPRESSLEVEL = 9
 CHUNK = 1024 * 1024
 VERIFY_SAMPLE = 10
+WORLD_MENU_POLICY = {
+    "schemaVersion": 1,
+    "policyId": "lanmc.world-menu",
+    "modId": "lanmc_world_menu",
+    "modVersion": "1.0.0",
+    "artifactPath": "mods/lanmc-world-menu-1.0.0.jar",
+    "sourceProject": "MarkZamore/Minecraft-26.3",
+    "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/world-policy",
+    "screen": "net.minecraft.client.gui.screens.PauseScreen",
+    "translationKey": "options.worldOptions.button",
+    "closeAfterInitScreen": "net.minecraft.client.gui.screens.WorldOptionsScreen",
+    "clientOnly": True,
+}
+WORLD_MENU_EMBEDDED_CONTRACT = "META-INF/world-menu-policy.json"
 
 # mods/ is shipped as zip chunks so the GitHub release stays far below its
 # 1000-asset ceiling with an 800+ mod pack. The bucket of a jar is a pure
@@ -128,6 +143,67 @@ def validate_mod_lock(pack: Path, portable: dict, shipped: list[str], file_meta:
             if mod["isLoadedMod"]})
         if sorted(row.get("modIds", [])) != ids:
             fail("active mod IDs differ from the distribution lock: " + row["path"])
+
+
+def validate_world_menu_policy(pack: Path, portable: dict, shipped: list[str]) -> None:
+    """Keep the pack's required UI policy when its runtime descriptor is upgraded.
+
+    This is independent of the distribution lock: deleting the helper and its
+    lock row together must not publish a pack that restores the cheats entry.
+    Generic pack-generator fixtures without this source contract stay generic.
+    The native build/probe separately verifies behavior against the actual target.
+    """
+    source = pack / "tools/world-policy/contract.json"
+    if not source.is_file():
+        return
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate policy field: " + key)
+            result[key] = value
+        return result
+
+    def read_contract(data):
+        if len(data) > 16384:
+            raise ValueError("world-menu policy contract is too large")
+        contract = json.loads(data, object_pairs_hook=unique_object)
+        if (not isinstance(contract, dict) or contract != WORLD_MENU_POLICY or
+                any(type(contract[key]) is not type(value)
+                    for key, value in WORLD_MENU_POLICY.items())):
+            raise ValueError("world-menu policy contract or source project identity differs")
+        return contract
+
+    try:
+        contract = read_contract(source.read_bytes())
+        rel = contract["artifactPath"]
+        if rel not in shipped or not (pack / rel).is_file():
+            fail("required world-menu policy component is missing: " + rel)
+        loader = portable.get("loader")
+        if not isinstance(loader, dict) or loader.get("type") != "neoforge":
+            fail("world-menu policy requires its verified NeoForge client implementation")
+        with zipfile.ZipFile(pack / rel) as archive:
+            required = ("META-INF/neoforge.mods.toml", WORLD_MENU_EMBEDDED_CONTRACT)
+            for name in required:
+                entries = [entry for entry in archive.infolist()
+                           if entry.filename.casefold() == name.casefold()]
+                if (len(entries) != 1 or entries[0].filename != name or
+                        entries[0].file_size > 65536):
+                    fail("world-menu policy requires one exact metadata entry: " + name)
+            embedded = read_contract(archive.read(WORLD_MENU_EMBEDDED_CONTRACT))
+            if embedded != contract:
+                fail("world-menu policy JAR does not embed its source contract")
+            metadata = tomllib.loads(archive.read(required[0]).decode("utf-8-sig"))
+            mods = metadata.get("mods")
+            if (metadata.get("modLoader") != "javafml" or not isinstance(mods, list) or
+                    len(mods) != 1 or not isinstance(mods[0], dict) or
+                    mods[0].get("modId") != contract["modId"] or
+                    mods[0].get("version") != contract["modVersion"] or
+                    mods[0].get("displayURL") != contract["projectUrl"]):
+                fail("world-menu policy JAR has a different root mod ID, version or source project")
+    except (OSError, ValueError, RuntimeError, zipfile.BadZipFile) as exc:
+        fail("cannot validate required world-menu policy: " + str(exc))
 
 
 def load_legacy_files(pack: Path, shipped: list[str]) -> list[dict]:
@@ -284,6 +360,7 @@ def generate(pack: Path, out: Path, revision: str) -> None:
         path = pack / Path(rel)
         file_meta[rel] = (sha256_file(path), path.stat().st_size)
 
+    validate_world_menu_policy(pack, portable, shipped)
     validate_mod_lock(pack, portable, shipped, file_meta)
     legacy_files = load_legacy_files(pack, shipped)
 
