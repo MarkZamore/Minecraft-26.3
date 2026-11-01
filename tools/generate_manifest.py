@@ -39,6 +39,7 @@ import re
 import shutil
 import sys
 import pathlib
+import tomllib
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -55,6 +56,24 @@ ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 ZIP_COMPRESSLEVEL = 9
 CHUNK = 1024 * 1024
 VERIFY_SAMPLE = 10
+PAUSE_ACTIONS_CONTRACT = {
+    "schemaVersion": 1,
+    "policyId": "lanmc.pause-actions",
+    "modId": "lanmc_pause_actions",
+    "modVersion": "1.0.0",
+    "artifactPath": "mods/lanmc-pause-actions-1.0.0.jar",
+    "sourceProject": "MarkZamore/Minecraft-26.3",
+    "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/pause-actions",
+    "screen": "net.minecraft.client.gui.screens.PauseScreen",
+    "translationKey": "options.worldOptions.button",
+    "lanTranslationKey": "menu.multiplayerOptions.button",
+    "reportsTranslationKey": "menu.playerReporting",
+    "replaceInPlace": True,
+    "clientOnly": True,
+    "requiredJvmProperties": {"minecraft.portable.identity.pauseLanRowEnabled": "false"},
+}
+PAUSE_ACTIONS_EMBEDDED_CONTRACT = "META-INF/lanmc-pause-actions.json"
+PAUSE_ACTIONS_MIXINS = "lanmc-pause-actions.mixins.json"
 
 # mods/ is shipped as zip chunks so the GitHub release stays far below its
 # 1000-asset ceiling with an 800+ mod pack. The bucket of a jar is a pure
@@ -128,6 +147,109 @@ def validate_mod_lock(pack: Path, portable: dict, shipped: list[str], file_meta:
             if mod["isLoadedMod"]})
         if sorted(row.get("modIds", [])) != ids:
             fail("active mod IDs differ from the distribution lock: " + row["path"])
+
+
+def validate_pause_actions(pack: Path, portable: dict, shipped: list[str]) -> None:
+    """Require the pack-owned same-button policy independently of its mod lock.
+
+    Updating a runtime descriptor, or deleting both a JAR and its lock entry,
+    must not silently restore the world-settings entry or the extra LAN row.
+    Generic generator fixtures without this source contract remain generic;
+    this pack's CI also unconditionally builds/probes the source component.
+    """
+    source = pack / "tools/pause-actions/contract.json"
+    if not source.is_file():
+        return
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate pause-actions field: " + key)
+            result[key] = value
+        return result
+
+    def read_json(data):
+        if len(data) > 65536:
+            raise ValueError("pause-actions metadata is too large")
+        return json.loads(data, object_pairs_hook=unique_object)
+
+    def read_contract(data):
+        contract = read_json(data)
+        if (not isinstance(contract, dict) or contract != PAUSE_ACTIONS_CONTRACT or
+                any(type(contract[key]) is not type(value)
+                    for key, value in PAUSE_ACTIONS_CONTRACT.items())):
+            raise ValueError("pause-actions contract or source project identity differs")
+        return contract
+
+    try:
+        if source.stat().st_size > 65536:
+            raise ValueError("pause-actions source contract is too large")
+        contract = read_contract(source.read_bytes())
+        rel = contract["artifactPath"]
+        if rel not in shipped or not (pack / rel).is_file():
+            fail("required pause-actions component is missing: " + rel)
+        loader = portable.get("loader")
+        if not isinstance(loader, dict) or loader.get("type") != "neoforge":
+            fail("pause-actions requires its verified NeoForge client implementation")
+
+        jvm_rel = "launcher/jvm-args.txt"
+        if jvm_rel not in shipped or not (pack / jvm_rel).is_file():
+            fail("pause-actions requires the pack's launcher/jvm-args.txt")
+        required = contract["requiredJvmProperties"]
+        counts = dict.fromkeys(required, 0)
+        for raw in (pack / jvm_rel).read_text(encoding="utf-8-sig").splitlines():
+            line = raw.strip()
+            if not line.startswith("-D"):
+                continue
+            key, separator, value = line[2:].partition("=")
+            if key in required:
+                counts[key] += 1
+                if not separator or value != required[key]:
+                    fail("pause-actions requires -D" + key + "=" + required[key])
+        if any(count != 1 for count in counts.values()):
+            fail("pause-actions requires exactly one declaration of each required JVM property")
+
+        for active in shipped:
+            if not active.startswith("mods/") or not active.lower().endswith(".jar"):
+                continue
+            if Path(active).name.casefold().startswith("lanmc-world-menu-") or any(
+                    mod["id"] == "lanmc_world_menu" and mod["isLoadedMod"]
+                    for mod in read_mods((pack / active).read_bytes(), active, loader="neoforge")):
+                fail("retired world-menu helper must not be active: " + active)
+
+        with zipfile.ZipFile(pack / rel) as archive:
+            names = ("META-INF/neoforge.mods.toml", PAUSE_ACTIONS_EMBEDDED_CONTRACT,
+                     PAUSE_ACTIONS_MIXINS, "lanmc/pauseactions/mixin/ButtonActionAccessor.class",
+                     "lanmc/pauseactions/PauseActions.class")
+            for name in names:
+                entries = [entry for entry in archive.infolist()
+                           if entry.filename.casefold() == name.casefold()]
+                if (len(entries) != 1 or entries[0].filename != name or
+                        entries[0].file_size == 0 or entries[0].file_size > 65536):
+                    fail("pause-actions requires one exact component entry: " + name)
+            if read_contract(archive.read(PAUSE_ACTIONS_EMBEDDED_CONTRACT)) != contract:
+                fail("pause-actions JAR does not embed its source contract")
+            metadata = tomllib.loads(archive.read(names[0]).decode("utf-8-sig"))
+            mods = metadata.get("mods")
+            if (metadata.get("modLoader") != "javafml" or not isinstance(mods, list) or
+                    len(mods) != 1 or not isinstance(mods[0], dict) or
+                    mods[0].get("modId") != contract["modId"] or
+                    mods[0].get("version") != contract["modVersion"] or
+                    mods[0].get("displayURL") != contract["projectUrl"] or
+                    metadata.get("mixins") != [{"config": PAUSE_ACTIONS_MIXINS}]):
+                fail("pause-actions JAR root identity or required mixin registration differs")
+            mixins = read_json(archive.read(PAUSE_ACTIONS_MIXINS))
+            injectors = mixins.get("injectors") if isinstance(mixins, dict) else None
+            if (not isinstance(mixins, dict) or mixins.get("required") is not True or
+                    mixins.get("package") != "lanmc.pauseactions.mixin" or
+                    mixins.get("client") != ["ButtonActionAccessor"] or
+                    mixins.get("mixins", []) != [] or mixins.get("server", []) != [] or
+                    not isinstance(injectors, dict) or type(injectors.get("defaultRequire")) is not int or
+                    injectors["defaultRequire"] != 1):
+                fail("pause-actions requires its mandatory client ButtonActionAccessor mixin")
+    except (OSError, ValueError, RuntimeError, zipfile.BadZipFile) as exc:
+        fail("cannot validate required pause-actions: " + str(exc))
 
 
 def load_legacy_files(pack: Path, shipped: list[str]) -> list[dict]:
@@ -284,6 +406,7 @@ def generate(pack: Path, out: Path, revision: str) -> None:
         path = pack / Path(rel)
         file_meta[rel] = (sha256_file(path), path.stat().st_size)
 
+    validate_pause_actions(pack, portable, shipped)
     validate_mod_lock(pack, portable, shipped, file_meta)
     legacy_files = load_legacy_files(pack, shipped)
 

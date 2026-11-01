@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "policyId": "lanmc.pause-actions",
+  "modId": "lanmc_pause_actions",
+  "modVersion": "1.0.0",
+  "artifactPath": "mods/lanmc-pause-actions-1.0.0.jar",
+  "sourceProject": "MarkZamore/Minecraft-26.3",
+  "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/pause-actions",
+  "screen": "net.minecraft.client.gui.screens.PauseScreen",
+  "translationKey": "options.worldOptions.button",
+  "lanTranslationKey": "menu.multiplayerOptions.button",
+  "reportsTranslationKey": "menu.playerReporting",
+  "replaceInPlace": true,
+  "clientOnly": true,
+  "requiredJvmProperties": {
+    "minecraft.portable.identity.pauseLanRowEnabled": "false"
+  }
+}

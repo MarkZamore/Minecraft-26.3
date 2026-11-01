@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "lanmc.pauseactions.mixin",
+  "compatibilityLevel": "JAVA_@JAVA_VERSION@",
+  "client": [
+    "ButtonActionAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

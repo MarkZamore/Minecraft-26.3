@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "641b88a5d0faa9c491371296b3dc50e7f1d4c931",
+  "platform": {
+    "schemaVersion": 1,
+    "minecraftVersion": "26.3",
+    "loader": {
+      "type": "neoforge",
+      "version": "26.3.0.99"
+    }
+  },
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sizeBytes": 43,
+      "sha256": "539c2943e7229d23508b5df9ee6d2e17b718e6b40eeacdf674e5139baad80418"
+    },
+    {
+      "path": ".github/workflows/publish.yml",
+      "sizeBytes": 5057,
+      "sha256": "c31a1ab2937cd68d5c7548e68ae827778faf8218c583c18853aed2d7c046a8cb"
+    },
+    {
+      "path": ".gitignore",
+      "sizeBytes": 19,
+      "sha256": "eb23201bf8045bae97d6f115436fbeceb52a080b218644bf1b15f92b9da8dd4e"
+    },
+    {
+      "path": "README.md",
+      "sizeBytes": 7631,
+      "sha256": "174a086dcbc3151cab6bcd2ce4abb64f35e517831448cb63e021cb4fea58156f"
+    },
+    {
+      "path": "config/log4j2.xml",
+      "sizeBytes": 4137,
+      "sha256": "6752b55f7a2ede24cef57d8bab70cfeec8f471f7adb72b6fb13b46853151c65d"
+    },
+    {
+      "path": "launcher/controls-preset.txt",
+      "sizeBytes": 3005,
+      "sha256": "b59348d914d666b1c0b6739a50f267d944180bd3e647a1c897f62ce0ba069524"
+    },
+    {
+      "path": "launcher/jvm-args.txt",
+      "sizeBytes": 44,
+      "sha256": "a1f3a734e672681e16e8db9a35ece57236720f99f95a85bac9eb2caac1e19d3c"
+    },
+    {
+      "path": "library/README.md",
+      "sizeBytes": 1900,
+      "sha256": "a4a5b284ba1d06198a974ff6c6c242f65234e5010b0d20d19ddf3e5524b1a497"
+    },
+    {
+      "path": "library/content.json",
+      "sizeBytes": 1316,
+      "sha256": "f4619ab4367154ccb9d728041a05889249281a145bb7aa59cebf41ceba7082e6"
+    },
+    {
+      "path": "library/mod-pages.json",
+      "sizeBytes": 226,
+      "sha256": "36992d6eacad2073b73d817a4d71a9ad1262048848d7c47466bc52e3807751eb"
+    },
+    {
+      "path": "library/preview.jpg",
+      "sizeBytes": 65104,
+      "sha256": "012eef42eb67431d31a88896311123645e910fc52b0b70721f577905a1597ded"
+    },
+    {
+      "path": "mods/emi-1.1.24-e7edb3a+26.3+neoforge.jar",
+      "sizeBytes": 1111167,
+      "sha256": "a74ffcc975700740b16169e96ed179c88fc121a41f84345c34ed6e4f513296db"
+    },
+    {
+      "path": "mods/iris-neoforge-1.11.7+mc26.3.jar",
+      "sizeBytes": 2804761,
+      "sha256": "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93"
+    },
+    {
+      "path": "mods/sodium-neoforge-0.9.3-beta.1+mc26.3.jar",
+      "sizeBytes": 1209577,
+      "sha256": "2d6dc7b223f93ce5c5fcedbddacdeb175c1e65484a5bc115e954465aebc8291f"
+    },
+    {
+      "path": "portable-pack.json",
+      "sizeBytes": 125,
+      "sha256": "0239166146e3b0f2b4d1b284af832fac289fa85f67214c19aaf44d1cc6e22a89"
+    },
+    {
+      "path": "tools/SHADERS.md",
+      "sizeBytes": 6902,
+      "sha256": "5c2941cd31193c3e2a81289c3dd74d82c57fe547602c1c7a8d7dccd5f314096c"
+    },
+    {
+      "path": "tools/UPGRADE-26.3.md",
+      "sizeBytes": 9185,
+      "sha256": "bc49ec948abec6e197e0145ba327b79198851e4f13c443dd235db91565e41a7f"
+    },
+    {
+      "path": "tools/distribution-lock.json",
+      "sizeBytes": 2386,
+      "sha256": "e8b566adee82dc26d8be085df5eac4ff4440b60d4f800ccdd7cfde2199520f08"
+    },
+    {
+      "path": "tools/generate_manifest.py",
+      "sizeBytes": 18728,
+      "sha256": "2486e6d96dda30768891d01b144fc1d1b4f9e1d10e4c4809acf2fc6d8b702018"
+    },
+    {
+      "path": "tools/keybinds/allowed-conflicts.json",
+      "sizeBytes": 4537,
+      "sha256": "a42f2de1b0ed69ecd3b9f1cc8e12768cb2b86fcc18428fe0c1029a6f96bdad9e"
+    },
+    {
+      "path": "tools/keybinds/build_preset.py",
+      "sizeBytes": 2210,
+      "sha256": "db42955256eaf3d161fd1a647db9ba275ef0f0042695c1f8689ada9ad8474d31"
+    },
+    {
+      "path": "tools/keybinds/check_preset.py",
+      "sizeBytes": 4140,
+      "sha256": "bcde14c942386e69359e28c8229b253615fecba4c940a01cb3bf7cbeab128289"
+    },
+    {
+      "path": "tools/keybinds/design.md",
+      "sizeBytes": 8583,
+      "sha256": "9b5f94389c33eb91035e11f4e050519a33bedb61f444b9df3ba8284a0b526eaf"
+    },
+    {
+      "path": "tools/keybinds/registered-keys.json",
+      "sizeBytes": 7926,
+      "sha256": "65a0fa682e2f7ccbbe37ca012d6ae238320447f604f289ac56cc69a334281288"
+    },
+    {
+      "path": "tools/keybinds/scan_keys.py",
+      "sizeBytes": 9898,
+      "sha256": "d65efd8541721a0969112c2144deb75f3e287b6e6198f4acc990b633654a3785"
+    },
+    {
+      "path": "tools/keybinds/test_preset.py",
+      "sizeBytes": 4061,
+      "sha256": "e4c49dbdb059335513251e55e58e5461429f5d3da2c7345d1d69934dc2bf09e4"
+    },
+    {
+      "path": "tools/legacy-files.json",
+      "sizeBytes": 395,
+      "sha256": "547de73f032e05711008cd6866f23bbe01412319c0baa01878927f42a88fbb83"
+    },
+    {
+      "path": "tools/pack_library.py",
+      "sizeBytes": 16329,
+      "sha256": "0b515b11547d85f8c063f0a4d5d531f1a91ae27815617b8e5d2ac0630d3cda65"
+    },
+    {
+      "path": "tools/shader-support-emi-baseline.json",
+      "sizeBytes": 4555,
+      "sha256": "bc9e003b82642c153dcba421eb1c71798bd115a1cfa40ded72dc1262c5af97ea"
+    },
+    {
+      "path": "tools/shader-support-runtime.json",
+      "sizeBytes": 4184,
+      "sha256": "345d6d9b8048b39ab2f58fdabd0db0c0b2e0e205d331649fe886e04232f2916b"
+    },
+    {
+      "path": "tools/shader-support-source.json",
+      "sizeBytes": 3664,
+      "sha256": "159bac6bab3f51c168f2329434f29dbf4f9d0ca69f6d276172d9f2df7981ad37"
+    },
+    {
+      "path": "tools/test_manifest_upgrade.py",
+      "sizeBytes": 4158,
+      "sha256": "d8e7b4ebc760b756b94e22b9cfc07d4a3f7141b81615542ee339f1ae434dbfc2"
+    },
+    {
+      "path": "tools/test_pack_library.py",
+      "sizeBytes": 9297,
+      "sha256": "ad0336edbda993738c4d63a0051058b49e56bcb0931c84669a5d2d508294d237"
+    },
+    {
+      "path": "tools/upgrades/minecraft-26.2-baseline.json",
+      "sizeBytes": 6276,
+      "sha256": "357f9d4c3f81f8714b6450f79cf6bf5e213dc59b0808872f911d6b0fb6837006"
+    }
+  ]
+}

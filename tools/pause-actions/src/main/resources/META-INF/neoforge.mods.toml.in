@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[@FML_MAJOR@,)"
+license="MIT"
+
+[[mods]]
+modId="lanmc_pause_actions"
+version="1.0.0"
+displayName="Pause Actions"
+authors="MarkZamore"
+displayURL="https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/pause-actions"
+description="""Reuses the native pause-menu button for Open to LAN and Player Reporting."""
+
+[[mixins]]
+config="lanmc-pause-actions.mixins.json"
+
+[[dependencies.lanmc_pause_actions]]
+modId="minecraft"
+type="required"
+versionRange="[@MINECRAFT@,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.lanmc_pause_actions]]
+modId="neoforge"
+type="required"
+versionRange="[@NEOFORGE@,)"
+ordering="NONE"
+side="CLIENT"

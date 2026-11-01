@@ -27,6 +27,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      # This is mandatory for every declared Minecraft runtime, including
+      # upgrades. Removing the component/contract must not silently restore
+      # post-creation world settings or the separate wide LAN row.
+      - name: Verify native pause actions
+        run: |
+          mkdir -p "$RUNNER_TEMP/pause-actions"
+          python -B tools/pause-actions/build.py --output "$RUNNER_TEMP/pause-actions/lanmc-pause-actions-1.0.0.jar"
+          cmp mods/lanmc-pause-actions-1.0.0.jar "$RUNNER_TEMP/pause-actions/lanmc-pause-actions-1.0.0.jar"
+          python -B tools/pause-actions/verify_native.py --jar mods/lanmc-pause-actions-1.0.0.jar
+
       - name: Check the controls preset
         if: ${{ hashFiles('launcher/controls-preset.txt') != '' }}
         run: |
@@ -41,6 +57,7 @@ jobs:
         run: |
           python -B -m unittest discover -s tools -p test_pack_library.py
           python -B -m unittest discover -s tools -p test_manifest_upgrade.py
+          python -B -m unittest discover -s tools -p test_pause_actions.py
           python tools/generate_manifest.py --pack . --out dist --verify-only
 
       - name: Publish pack-latest release
