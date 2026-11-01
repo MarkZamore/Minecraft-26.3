@@ -17,7 +17,8 @@ class PresetValidationTests(unittest.TestCase):
         overlaps, problems = check_preset.validate(self.mappings, self.registry, self.allowances)
         self.assertEqual([], problems)
         self.assertEqual(len(self.allowances), overlaps)
-        self.assertEqual(62, len(self.mappings))
+        self.assertEqual(66, len(self.mappings))
+        self.assertEqual("key.keyboard.j", self.mappings["key_iris.keybind.shaderPackSelection"])
 
     def test_duplicate_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "duplicate"):

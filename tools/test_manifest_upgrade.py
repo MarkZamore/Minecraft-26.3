@@ -5,6 +5,7 @@ import pathlib
 import tempfile
 import unittest
 import zipfile
+import io
 
 import generate_manifest
 
@@ -55,6 +56,24 @@ class UpgradeManifestTests(unittest.TestCase):
         (self.pack / "mods/old.jar").write_bytes(original)
         with self.assertRaises(SystemExit):
             self.generate()
+
+    def test_wrapper_and_embedded_same_mod_id_are_one_locked_id(self):
+        # Sodium's official NeoForge wrapper and selected inner jar both carry
+        # the same id/version. The lock records unique runtime ids, not two mods.
+        inner = io.BytesIO()
+        with zipfile.ZipFile(inner, "w") as archive:
+            archive.writestr("META-INF/neoforge.mods.toml", '[[mods]]\nmodId="emi"\ndisplayName="EMI"\nversion="new"\n')
+        with zipfile.ZipFile(self.jar, "a") as archive:
+            archive.writestr("META-INF/jarjar/embedded.jar", inner.getvalue())
+            archive.writestr("META-INF/jarjar/metadata.json", json.dumps({"jars": [{
+                "identifier": {"group": "author", "artifact": "embedded"},
+                "version": {"range": "[1,)", "artifactVersion": "1"},
+                "path": "META-INF/jarjar/embedded.jar"}]}))
+        active = {**self.active, "sizeBytes": self.jar.stat().st_size,
+                  "sha256": hashlib.sha256(self.jar.read_bytes()).hexdigest()}
+        self.write_lock("distribution-lock.json", {**self.portable, "files": [active]})
+        manifest = self.generate()
+        self.assertEqual(1, manifest["modCount"])
 
     def test_legacy_active_collision_and_traversal_stop_publication(self):
         for path in ("mods/new.jar", "mods/../outside.jar"):

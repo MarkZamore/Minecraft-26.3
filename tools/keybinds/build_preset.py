@@ -7,9 +7,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
-# Keep vanilla muscle memory; this light pack has no mod KeyMapping bindings.
+# Keep vanilla muscle memory. Iris selection uses free J rather than F3+I's I.
 # Add deliberate changes here rather than editing generated preset lines.
-LAYOUT: dict[str, str] = {}
+LAYOUT: dict[str, str] = {"iris.keybind.shaderPackSelection": "key.keyboard.j"}
 
 
 def render() -> str:
@@ -18,7 +18,7 @@ def render() -> str:
     if LAYOUT.keys() - known:
         raise ValueError(f"Unknown overrides: {LAYOUT.keys() - known}")
     lines = [f"# Minecraft {registry['minecraftVersion']} controls preset: standard vanilla controls.",
-             "# Complete options.txt key mappings; EMI owns its separate config/emi.css binds.",
+             "# Complete vanilla and Iris OpenGL mappings; EMI owns config/emi.css binds.",
              "# Vanilla spectator/debug overlaps are deliberate; see tools/keybinds/design.md.",
              "# Generated with python tools/keybinds/build_preset.py."]
     category = None

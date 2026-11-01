@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "checkedAtDate": "2026-11-01",
+  "upstreamPackRevision": "b7ca3fe5a6e58ddbdb4e32f1dbe73b1412f70954",
+  "minecraftVersion": "26.3",
+  "loader": {
+    "type": "neoforge",
+    "version": "26.3.0.99"
+  },
+  "addedMods": [
+    {
+      "path": "mods/iris-neoforge-1.11.7+mc26.3.jar",
+      "sizeBytes": 2804761,
+      "sha256": "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93",
+      "modIds": [
+        "iris"
+      ],
+      "projectUrl": "https://www.curseforge.com/minecraft/mc-mods/irisshaders",
+      "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/irisshaders/files/9015109",
+      "releaseType": "release",
+      "modrinthVersionId": "Ag5S66CF",
+      "downloadUrl": "https://cdn.modrinth.com/data/YL57xq9U/versions/Ag5S66CF/iris-neoforge-1.11.7%2Bmc26.3.jar",
+      "authorHashes": {
+        "sha512": "302659f09e50d02a6cd96075be93aade2a2f9d709afe21d56465228fb7d7f4717566e3702a7872479df2fff9b7a5ff5b1b6047cc95e09ee6120fad5ea5857eec",
+        "sha1": "57cbbd1f58b6226c633520541c1a3ae57c019373"
+      },
+      "role": "user-shader-loader"
+    },
+    {
+      "path": "mods/sodium-neoforge-0.9.3-beta.1+mc26.3.jar",
+      "sizeBytes": 1209577,
+      "sha256": "2d6dc7b223f93ce5c5fcedbddacdeb175c1e65484a5bc115e954465aebc8291f",
+      "modIds": [
+        "sodium"
+      ],
+      "projectUrl": "https://www.curseforge.com/minecraft/mc-mods/sodium",
+      "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/sodium/files/9195225",
+      "releaseType": "beta",
+      "modrinthVersionId": "SS023RVV",
+      "downloadUrl": "https://cdn.modrinth.com/data/AANobbMI/versions/SS023RVV/sodium-neoforge-0.9.3-beta.1%2Bmc26.3.jar",
+      "authorHashes": {
+        "sha1": "c9412897122afb33007f6c0d6ee1b2248a9ebcf7",
+        "sha512": "92cdb344cb8049993685e3d81498411d4e6965a8f054c912a297bfe550937ed4792b7c1cb4efea5b5ac9c0e6c32aea777389207e481f008ce6f176b5ae6aab93"
+      },
+      "role": "required-iris-renderer"
+    }
+  ],
+  "requiredDependencyEvidence": {
+    "source": "https://api.modrinth.com/v2/version/Ag5S66CF",
+    "requiredProjectId": "AANobbMI",
+    "requiredProjectSlug": "sodium",
+    "additionalExternalDependencies": [],
+    "irisModrinthRecommendedVersionId": "VHtnT9Q4",
+    "irisNativeRequiredSodiumRange": "[0.6,)",
+    "selectedSodiumVersionId": "SS023RVV",
+    "recommendationOverrideReason": "Official Sodium0.9.2 native LevelExtractorMixin fails with currentNeoForge26.3.0.99. Official0.9.3-beta.1 fixes this exact API mismatch forNeoForge>=26.3.0.65-beta; no required mixin is disabled."
+  },
+  "authorFilesRewritten": false,
+  "bundledShaderpacks": [],
+  "shippedConfigOverrides": [],
+  "renderDistanceSimulationShadowLimitsIntroduced": false,
+  "backendForced": false,
+  "safetyReview": {
+    "requiredChange": false,
+    "reason": "The two official client render mods add shader loading and rendering; they do not add player world-changing abilities, block/inventory modification paths, caster permissions or delayed world edits. This light vanilla profile has no NEW content ability policy requiring an extra gameplay Safety module."
+  },
+  "runtimeVerification": "See shader-support-runtime.json; title/UI/external ZIP/world passed, normal JVM exit NOT verified due retained executor.",
+  "notes": [
+    "Iris own internal shader resources remain inside its byte-exact author jar; no optional shader pack is shipped.",
+    "The four OpenGL key registrations are read from exact Iris class bytes; Vulkan has only the selection-placeholder registration.",
+    "Choosing another user shader pack does not require a launcher code change."
+  ],
+  "candidateSodium092NativeFailureRecorded": true
+}

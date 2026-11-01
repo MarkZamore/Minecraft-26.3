@@ -123,9 +123,9 @@ def validate_mod_lock(pack: Path, portable: dict, shipped: list[str], file_meta:
     if expected != actual:
         fail("active mod files differ from the exact-hash distribution lock")
     for row in locked:
-        ids = sorted(mod["id"] for mod in read_mods(
+        ids = sorted({mod["id"] for mod in read_mods(
             (pack / row["path"]).read_bytes(), row["path"], loader=portable["loader"]["type"].lower())
-            if mod["isLoadedMod"])
+            if mod["isLoadedMod"]})
         if sorted(row.get("modIds", [])) != ids:
             fail("active mod IDs differ from the distribution lock: " + row["path"])
 

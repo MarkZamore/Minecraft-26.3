@@ -12,10 +12,45 @@ import re
 import shutil
 import subprocess
 import zipfile
+import io
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
+IRIS_SHA256 = "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93"
+
+
+def parse_iris_mappings(bytecode: str, native_names: dict) -> list[dict]:
+    """Read the four actual OpenGL registrations, using the client's SDL names."""
+    mappings = []
+    constructors = re.finditer(
+        r'new\s+[^\n]+// class net/minecraft/client/KeyMapping\s*\n'
+        r'(?P<code>.*?)invokespecial[^\n]+KeyMapping\."<init>"[^\n]+', bytecode, re.S)
+    for constructor in constructors:
+        code = constructor.group("code")
+        name = re.search(r"// String (iris\.keybind\.[^\n]+)", code)
+        category = re.search(r"// Field (?:net/irisshaders/iris/IrisVKOnly\.)?irisKeybindCategory:", code)
+        if not name or not category:
+            raise ValueError("An Iris key registration changed; review its actual constructor")
+        if "InputConstants.UNKNOWN:" in code:
+            serialized = "key.keyboard.unknown"
+        else:
+            tail = code[code.index("InputConstants$Type.KEYBOARD:"):].splitlines()[1:]
+            number = next((integer_constant(line) for line in tail if integer_constant(line) is not None), None)
+            serialized = native_names.get(("KEYBOARD", number))
+            if serialized is None:
+                raise ValueError("An Iris SDL key has no native serialized name")
+        mappings.append({"name": name.group(1).strip(), "default": serialized, "category": "IRIS"})
+    return mappings
+
+
+def nested_archives(data: bytes, origin: str):
+    """Include nested mod classes; do not assume a wrapper is the only registry owner."""
+    yield origin, data
+    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        for name in sorted(archive.namelist()):
+            if name.endswith(".jar"):
+                yield from nested_archives(archive.read(name), origin + "!/" + name)
 
 
 def integer_constant(line: str) -> int | None:
@@ -89,16 +124,41 @@ def scan(client: Path, javap: str) -> dict:
     if not mappings or len({m["name"] for m in mappings}) != len(mappings):
         raise ValueError("Missing or duplicate client mappings")
     mods = {}
-    for mod in sorted((REPO / "mods").glob("*.jar")):
-        with zipfile.ZipFile(mod) as archive:
-            referenced = [name for name in archive.namelist() if name.endswith(".class")
-                          and b"net/minecraft/client/KeyMapping" in archive.read(name)]
-        for name in referenced:
-            bytecode = subprocess.check_output(
-                [javap, "-p", "-c", "-classpath", str(mod), name[:-6].replace("/", ".")], text=True)
-            if re.search(r'// Method [^\n]*(?:KeyMapping|ToggleKeyMapping)\."<init>"', bytecode):
-                raise ValueError(f"{mod.name} constructs KeyMapping in {name}; extend registry scanning")
-        mods[mod.name] = hashlib.sha256(mod.read_bytes()).hexdigest()
+    iris_opengl, iris_vulkan = None, None
+    import tempfile
+    with tempfile.TemporaryDirectory() as temporary:
+        for mod in sorted((REPO / "mods").glob("*.jar")):
+            data = mod.read_bytes()
+            mod_sha = hashlib.sha256(data).hexdigest()
+            for origin, archive_data in nested_archives(data, mod.name):
+                with zipfile.ZipFile(io.BytesIO(archive_data)) as archive:
+                    referenced = [name for name in archive.namelist() if name.endswith(".class")
+                                  and b"net/minecraft/client/KeyMapping" in archive.read(name)]
+                inspected = mod
+                if origin != mod.name:
+                    inspected = Path(temporary) / (hashlib.sha256(archive_data).hexdigest() + ".jar")
+                    inspected.write_bytes(archive_data)
+                for name in referenced:
+                    bytecode = subprocess.check_output(
+                        [javap, "-p", "-c", "-classpath", str(inspected), name[:-6].replace("/", ".")], text=True)
+                    if re.search(r'// Method [^\n]*(?:KeyMapping|ToggleKeyMapping)\."<init>"', bytecode):
+                        if mod_sha != IRIS_SHA256 or origin != mod.name:
+                            raise ValueError(f"{origin} constructs KeyMapping in {name}; extend registry scanning")
+                        if name == "net/irisshaders/iris/Iris.class":
+                            iris_opengl = parse_iris_mappings(bytecode, native_names)
+                        elif name == "net/irisshaders/iris/IrisVKOnly.class":
+                            iris_vulkan = parse_iris_mappings(bytecode, native_names)
+                        else:
+                            raise ValueError("Unreviewed Iris key constructor: " + name)
+            mods[mod.name] = mod_sha
+    if IRIS_SHA256 in mods.values():
+        expected = {"iris.keybind.reload": "key.keyboard.r", "iris.keybind.toggleShaders": "key.keyboard.k",
+                    "iris.keybind.shaderPackSelection": "key.keyboard.i", "iris.keybind.wireframe": "key.keyboard.unknown"}
+        if (iris_opengl is None or len(iris_opengl) != 4 or
+                {row["name"]: row["default"] for row in iris_opengl} != expected or
+                iris_vulkan != [{"name": "iris.keybind.shaderPackSelection", "default": "key.keyboard.i", "category": "IRIS"}]):
+            raise ValueError("Iris OpenGL/Vulkan registration branches changed")
+        mappings.extend(iris_opengl)
     runtime = json.loads((REPO / "portable-pack.json").read_text(encoding="utf-8"))
     if runtime["loader"]["type"].lower() != "neoforge":
         raise ValueError("This scanner expects the NeoForge client")
@@ -118,7 +178,7 @@ def main() -> None:
     if args.verify:
         if json.loads(target.read_text(encoding="utf-8")) != snapshot:
             raise SystemExit("Client/mod registry differs; inspect and refresh registered-keys.json")
-        print(f"Source verified: {len(snapshot['mappings'])} client mappings, no mod KeyMapping registrations")
+        print(f"Source verified: {len(snapshot['mappings'])} mappings including reviewed mod registrations")
     else:
         target.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
         print(f"Wrote {len(snapshot['mappings'])} registered mappings")

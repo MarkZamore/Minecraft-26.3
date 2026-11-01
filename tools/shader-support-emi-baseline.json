@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "status": "ORIGINAL_PUBLISHED_SOURCE_REPRODUCES_RETAINED_EXECUTOR_AFTER_NATIVE_RELOAD_AND_QUIT",
+  "sourceRevision": "b7ca3fe5a6e58ddbdb4e32f1dbe73b1412f70954",
+  "sourceRuntimeFilesVerified": 5,
+  "sourceFiles": [
+    {
+      "path": "config/log4j2.xml",
+      "sizeBytes": 4137,
+      "sha256": "6752b55f7a2ede24cef57d8bab70cfeec8f471f7adb72b6fb13b46853151c65d"
+    },
+    {
+      "path": "launcher/controls-preset.txt",
+      "sizeBytes": 2809,
+      "sha256": "9b949d9a4cb34c8d29122deeba31625fc4fac2687366701e0e847ee5cd84cd3a"
+    },
+    {
+      "path": "launcher/jvm-args.txt",
+      "sizeBytes": 44,
+      "sha256": "a1f3a734e672681e16e8db9a35ece57236720f99f95a85bac9eb2caac1e19d3c"
+    },
+    {
+      "path": "mods/emi-1.1.24-e7edb3a+26.3+neoforge.jar",
+      "sizeBytes": 1111167,
+      "sha256": "a74ffcc975700740b16169e96ed179c88fc121a41f84345c34ed6e4f513296db"
+    },
+    {
+      "path": "portable-pack.json",
+      "sizeBytes": 125,
+      "sha256": "0239166146e3b0f2b4d1b284af832fac289fa85f67214c19aaf44d1cc6e22a89"
+    }
+  ],
+  "packModIds": [
+    "emi"
+  ],
+  "actualModIdsIncludingPlatformAndTransport": [
+    "minecraft",
+    "neoforge",
+    "e4steam",
+    "emi"
+  ],
+  "minecraft": "26.3",
+  "neoforge": "26.3.0.99",
+  "java": "25.0.4.1",
+  "launcherAssemblySha256": "b3862b052ab9d51e13e81e7f8b5f5b5685c12316b04d6075e3786f3b896a3d20",
+  "irisSodiumPresent": false,
+  "personalWorldsOrOptionsCopied": false,
+  "nativeMenuObserved": true,
+  "nativeResourceReloadAction": "Language screen: English US changed to English Canada, then Done; private QA instance only",
+  "privateLanguageAfterReload": "en_ca",
+  "reloadCompletedLocalTime": "18:00:40",
+  "nativeQuitGameButtonLocalTime": "18:01:31",
+  "nativeRendererFmlClosedLocalTime": "18:01:32",
+  "worldCreated": false,
+  "normalJvmExitVerified": false,
+  "soleRemainingNonDaemonWorker": {
+    "name": "pool-11-thread-1",
+    "state": "WAITING LinkedBlockingQueue.take",
+    "nativeCreatorStackTop": [
+      "java/lang/System$1.start",
+      "jdk/internal/vm/SharedThreadContainer.start",
+      "java/util/concurrent/ThreadPoolExecutor.addWorker",
+      "java/util/concurrent/ThreadPoolExecutor.execute",
+      "java/util/concurrent/CompletableFuture$UniCompletion.claim"
+    ],
+    "jfrStartTime": "2026-11-01T18:00:40.611683600+05:00",
+    "stackTruncated": false,
+    "directEmiFramePresent": false
+  },
+  "destroyJavaVmWaiting": true,
+  "externalForcedCleanupAfterNativeQuit": true,
+  "observedExitCodeAfterCleanup": -1,
+  "causalConclusion": "The same retained non-daemon executor occurs in unchanged published source without Iris or Sodium; these two additions are not a necessary cause. Exact existing EMI source/JAR creates an unclosed default fixed thread pool in resource reload and matches native timing and CompletableFuture path. The JFR thread-start stack ends in JDK async frames, so it does not directly name EMI as the creator.",
+  "officialFixAvailability": {
+    "checkedDate": "2026-11-01",
+    "projectUrl": "https://www.curseforge.com/minecraft/mc-mods/emi-unofficial-port-unstable",
+    "latestPublished26_3File": "https://www.curseforge.com/minecraft/mc-mods/emi-unofficial-port-unstable/files/9242955",
+    "latestPublished26_3FileName": "emi-1.1.24-e7edb3a+26.3+neoforge.jar",
+    "author26_3BranchHead": "e7edb3aa4d7619eaaa03e01084fe01bb3db567e7",
+    "authorSource": "https://github.com/link-fgfgui/emi/blob/e7edb3aa4d7619eaaa03e01084fe01bb3db567e7/xplat/src/main/java/dev/emi/emi/mixin/MinecraftClientMixin.java",
+    "newerPublishedFixFound": false
+  },
+  "evidenceHashes": {
+    "logSha256": "30616a2e6355e64b9b34c2f09a847519277aaff0490d720a7f8a131ea626ea61",
+    "threadDumpSha256": "11be27d6385ca8dcaf6c97a997100a69f99b3b54fb6e1433c0ddf911b68004ba",
+    "threadStartJfrSha256": "cd172cd0ade42c3a7977f6b53f015af2c07cefa29b9ca3e5977b469c776a3e5f",
+    "screenshots": {
+      "01-original-title.jpg": "6c72e3090e23a286f89378ee050d758bca44747ad8da693bb993cd4e2d0dfeeb",
+      "02-original-language-change.jpg": "7285fb7dbadaaef58cde404ec8b84269045452b90f4e6fde93ce631d063eb759",
+      "03-original-after-reload.jpg": "efb63d9a2aaabe8bb5c53ad36e24b8a1c164e5c9b3a104bfa5634fda655406e2"
+    }
+  },
+  "modOrLauncherCodeChanged": false,
+  "proposals": [
+    "Keep this defect disclosed separately from shader support; do not claim normal process exit.",
+    "No official newer same-author26.3 fix was found. A custom EMI patch, replacement or removal requires a separate explicit scope decision; no hidden launcher cleanup is added."
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "status": "TITLE_SHADER_UI_EXTERNAL_ZIP_WORLD_VERIFIED_EXIT_LIMIT_REMAINS",
+  "checkedDate": "2026-11-01",
+  "launcherVersion": 420,
+  "launcherAssemblySha256": "b3862b052ab9d51e13e81e7f8b5f5b5685c12316b04d6075e3786f3b896a3d20",
+  "minecraft": "26.3",
+  "neoforge": "26.3.0.99",
+  "java": "25.0.4.1",
+  "iris": "1.11.7+mc26.3",
+  "sodium": "0.9.3-beta.1+mc26.3",
+  "packModIds": [
+    "emi",
+    "iris",
+    "sodium"
+  ],
+  "actualNativeModIdsIncludingPlatformAndTransport": [
+    "minecraft",
+    "neoforge",
+    "e4steam",
+    "emi",
+    "iris",
+    "sodium"
+  ],
+  "nativeMenuObserved": true,
+  "nativeShaderSelectorInitiallyEmptyObserved": true,
+  "externalQaZipDetectedSelectedAndLoaded": true,
+  "nativeShaderpackLoadedMessageObserved": true,
+  "nativeWorldJoined": true,
+  "nativeOverworldPipelineCreated": true,
+  "nativeSaveMessagesForAllThreeDimensions": true,
+  "normalApplicationStopAndRendererCloseObserved": true,
+  "normalJvmExitVerified": false,
+  "externalForcedCleanupAfterNativeSave": true,
+  "observedProcessExitCode": -1,
+  "remainingNonDaemonExecutor": {
+    "name": "pool-17-thread-1",
+    "state": "WAITING LinkedBlockingQueue.take",
+    "mainState": "DestroyJavaVM waiting for non-daemon thread",
+    "ownerAttribution": "Exact published baseline without Iris/Sodium reproduces the same idle non-daemon fixed-pool/DestroyJavaVM retention after native resource reload and Quit Game. Existing EMI injection is the strong static owner candidate; JFR creation stack ends in JDK async frames, not a direct EMI frame."
+  },
+  "nativePersistedMappings": 66,
+  "presetMappings": 66,
+  "presetApplyOrJHotkeyVerified": false,
+  "graphicsBackendObserved": "opengl",
+  "graphicsBackendForced": false,
+  "renderDistanceObservedNativeDefault": 16,
+  "simulationDistanceObservedNativeDefault": 12,
+  "distanceSettingsChangedByQa": false,
+  "pauseOnLostFocusDisabledOnlyInPrivateQa": true,
+  "shaderPackScope": {
+    "generatedByQaNotSuppliedByUser": true,
+    "name": "LANMinecraft-QA-Passthrough.zip",
+    "sha256": "cb5e451c261d5d588bb12d6e3841e78d6ac588a14839c42e8292959002d5c14a",
+    "privateInstanceOnly": true,
+    "sourceOrDistributionContainsShaderZip": false,
+    "qualityLimitation": "The minimal final-only shader does not provide complete terrain rendering. It proves ZIP discovery/selection and pipeline initialization, not visual quality or arbitrary shader compatibility."
+  },
+  "finalLog": {
+    "sizeBytes": 27479,
+    "sha256": "c2436f71a803580160ff80102e928dfe7a694879d13c87c1340de919b4f00f6e",
+    "errorHeaders": 4,
+    "fatalHeaders": 0,
+    "errorFamilies": [
+      "Windows OSHI performance counters unavailable",
+      "Offline QA account properties401",
+      "Offline QA Realms feature flags/authentication"
+    ]
+  },
+  "evidenceHashes": {
+    "threadDumpSha256": "8aeb90696f56ae624f2573d6324ef145061c96766e29a7e1d8faceba06a82551",
+    "savedLevelDatSha256": "747c93c1831dad91ea5139bed2988b6b219466d9b3cba9c49d62c469077acdaa",
+    "screenshots": {
+      "01-title.jpg": "89bc012332abe33ad5ca3e2ce5a4e33b07bc8e09d974dbf333b14a40014ae4c1",
+      "02-native-video-settings.jpg": "c2bad6a98a69524ff79c80a1ddd839d4315c3f02941e3695a1c3178e8501c570",
+      "03-empty-shader-selector.jpg": "a37fbed9c98bc6fdf76e285d6a16fd5b1dd114010885a83f2e0821d3340737f7",
+      "04-qa-zip-discovered.jpg": "6faa4358dc4313ff341d404f7ee0fe3dd0f75ad6f869bfe794d8ef5047c921ad",
+      "05-qa-zip-applied.jpg": "a5d3fd6070403a094b4979b87442a564dff001e9b0f7f4c87604a727e11444f2",
+      "06-qa-minimal-pipeline-world.jpg": "e90658e1c1b044f63a8c939cf7cff7de899c9cbbbd1a402c97a12667d435193d"
+    }
+  },
+  "limits": [
+    "No zero-error claim",
+    "No arbitrary shader or visual-quality PASS",
+    "No two-client, selected-skin or Steam-guest test",
+    "No personal world or options were copied",
+    "Candidate Sodium0.9.2 failed mandatory LevelExtractorMixin; the official0.9.3-beta.1 fixes that NeoForge API mismatch",
+    "First fixture failure omitted two installer artifacts during selective QA cache copy; it is not attributed to production launcher or content mods"
+  ],
+  "existingSourceBaselineProof": "shader-support-emi-baseline.json"
+}

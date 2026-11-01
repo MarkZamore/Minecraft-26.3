@@ -3,7 +3,9 @@
   "neoForgeVersion": "26.3.0.99",
   "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
   "modSha256": {
-    "emi-1.1.24-e7edb3a+26.3+neoforge.jar": "a74ffcc975700740b16169e96ed179c88fc121a41f84345c34ed6e4f513296db"
+    "emi-1.1.24-e7edb3a+26.3+neoforge.jar": "a74ffcc975700740b16169e96ed179c88fc121a41f84345c34ed6e4f513296db",
+    "iris-neoforge-1.11.7+mc26.3.jar": "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93",
+    "sodium-neoforge-0.9.3-beta.1+mc26.3.jar": "2d6dc7b223f93ce5c5fcedbddacdeb175c1e65484a5bc115e954465aebc8291f"
   },
   "mappings": [
     {
@@ -315,6 +317,26 @@
       "name": "key.debug.improvedTransparency",
       "default": "key.keyboard.x",
       "category": "DEBUG"
+    },
+    {
+      "name": "iris.keybind.reload",
+      "default": "key.keyboard.r",
+      "category": "IRIS"
+    },
+    {
+      "name": "iris.keybind.toggleShaders",
+      "default": "key.keyboard.k",
+      "category": "IRIS"
+    },
+    {
+      "name": "iris.keybind.shaderPackSelection",
+      "default": "key.keyboard.i",
+      "category": "IRIS"
+    },
+    {
+      "name": "iris.keybind.wireframe",
+      "default": "key.keyboard.unknown",
+      "category": "IRIS"
     }
   ]
 }

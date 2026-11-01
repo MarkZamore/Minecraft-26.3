@@ -17,6 +17,42 @@
       "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/emi-unofficial-port-unstable/files/9242955",
       "releaseType": "alpha",
       "sourceCommit": "e7edb3aa4d7619eaaa03e01084fe01bb3db567e7"
+    },
+    {
+      "path": "mods/iris-neoforge-1.11.7+mc26.3.jar",
+      "sizeBytes": 2804761,
+      "sha256": "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93",
+      "modIds": [
+        "iris"
+      ],
+      "projectUrl": "https://www.curseforge.com/minecraft/mc-mods/irisshaders",
+      "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/irisshaders/files/9015109",
+      "releaseType": "release",
+      "modrinthVersionId": "Ag5S66CF",
+      "downloadUrl": "https://cdn.modrinth.com/data/YL57xq9U/versions/Ag5S66CF/iris-neoforge-1.11.7%2Bmc26.3.jar",
+      "authorHashes": {
+        "sha512": "302659f09e50d02a6cd96075be93aade2a2f9d709afe21d56465228fb7d7f4717566e3702a7872479df2fff9b7a5ff5b1b6047cc95e09ee6120fad5ea5857eec",
+        "sha1": "57cbbd1f58b6226c633520541c1a3ae57c019373"
+      },
+      "role": "user-shader-loader"
+    },
+    {
+      "path": "mods/sodium-neoforge-0.9.3-beta.1+mc26.3.jar",
+      "sizeBytes": 1209577,
+      "sha256": "2d6dc7b223f93ce5c5fcedbddacdeb175c1e65484a5bc115e954465aebc8291f",
+      "modIds": [
+        "sodium"
+      ],
+      "projectUrl": "https://www.curseforge.com/minecraft/mc-mods/sodium",
+      "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/sodium/files/9195225",
+      "releaseType": "beta",
+      "modrinthVersionId": "SS023RVV",
+      "downloadUrl": "https://cdn.modrinth.com/data/AANobbMI/versions/SS023RVV/sodium-neoforge-0.9.3-beta.1%2Bmc26.3.jar",
+      "authorHashes": {
+        "sha1": "c9412897122afb33007f6c0d6ee1b2248a9ebcf7",
+        "sha512": "92cdb344cb8049993685e3d81498411d4e6965a8f054c912a297bfe550937ed4792b7c1cb4efea5b5ac9c0e6c32aea777389207e481f008ce6f176b5ae6aab93"
+      },
+      "role": "required-iris-renderer"
     }
   ]
 }
