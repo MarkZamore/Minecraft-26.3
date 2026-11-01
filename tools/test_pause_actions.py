@@ -9,6 +9,7 @@ import unittest
 import zipfile
 
 import generate_manifest
+import network_logging_policy
 
 
 class PauseActionsPublicationTests(unittest.TestCase):
@@ -35,6 +36,10 @@ class PauseActionsPublicationTests(unittest.TestCase):
                              "package": "lanmc.pauseactions.mixin", "compatibilityLevel": "JAVA_25",
                              "client": ["ButtonActionAccessor"], "injectors": {"defaultRequire": 1}}
         self.write_helper()
+        logging = self.pack / "config/log4j2.xml"
+        logging.parent.mkdir()
+        logging.write_bytes((Path(__file__).resolve().parent.parent / "config/log4j2.xml").read_bytes())
+        network_logging_policy.prepare(self.pack)
 
     def write_helper(self, *, mod_id=None, policy=None, project=None, version=None,
                      embedded=True, mixins=None, registered=True, missing_class=None,
@@ -97,13 +102,22 @@ class PauseActionsPublicationTests(unittest.TestCase):
             self.generate()
         self.assertFalse((self.root / "dist/pack-manifest.json").exists())
 
-    def test_current_and_future_runtime_descriptors_keep_the_same_button_contract(self):
+    def test_current_and_future_runtime_descriptors_keep_the_button_contract_with_reviewed_logging(self):
         for game, loader in (("26.3", "26.3.0.99"), ("26.4", "26.4.0.1")):
             with self.subTest(minecraft=game):
                 self.portable["minecraftVersion"] = game
                 self.portable["loader"]["version"] = loader
                 self.refresh_lock()
                 before = self.jvm.read_bytes()
+                if game != "26.3":
+                    # The menu's forward contract remains valid independently;
+                    # publishing a new runtime also needs its logging caller proof.
+                    generate_manifest.validate_pause_actions(self.pack, self.portable,
+                        [self.contract["artifactPath"], "launcher/jvm-args.txt"])
+                    with self.assertRaisesRegex(ValueError, "native proof does not cover Minecraft 26.4"):
+                        self.generate()
+                    self.assertEqual(before, self.jvm.read_bytes())
+                    continue
                 manifest = self.generate()
                 self.assertEqual(game, manifest["minecraftVersion"])
                 self.assertIn(self.contract["artifactPath"], [row["path"] for row in manifest["files"]])
@@ -181,12 +195,14 @@ class PauseActionsPublicationTests(unittest.TestCase):
         for text in ("", key + "=true\n", key + "\n", key + "=False\n",
                      key + "=false\n" + key + "=false\n", key + "=false\n" + key + "=true\n"):
             with self.subTest(text=text):
-                self.jvm.write_text("-Dunrelated.player.choice=true\n" + text, encoding="utf-8")
+                self.jvm.write_text("-Dlog4j.configurationFile=config/log4j2.xml\n-Dunrelated.player.choice=true\n" + text, encoding="utf-8")
                 self.assert_refused()
 
     def test_missing_jvm_file_refuses_publication(self):
         self.jvm.unlink()
-        self.assert_refused()
+        with self.assertRaisesRegex(ValueError, "Missing pack logging file: launcher/jvm-args.txt"):
+            self.generate()
+        self.assertFalse((self.root / "dist/pack-manifest.json").exists())
 
     def test_commented_out_property_is_ignored_and_other_arguments_are_untouched(self):
         self.jvm.write_text(self.jvm_text + "# -Dminecraft.portable.identity.pauseLanRowEnabled=true\n", encoding="utf-8")

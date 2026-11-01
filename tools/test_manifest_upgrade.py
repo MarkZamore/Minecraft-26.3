@@ -8,6 +8,7 @@ import zipfile
 import io
 
 import generate_manifest
+import network_logging_policy
 
 
 class UpgradeManifestTests(unittest.TestCase):
@@ -19,6 +20,10 @@ class UpgradeManifestTests(unittest.TestCase):
         (self.pack / "tools").mkdir()
         self.portable = {"minecraftVersion": "26.3", "loader": {"type": "neoforge", "version": "26.3.0.99"}}
         (self.pack / "portable-pack.json").write_text(json.dumps(self.portable))
+        logging = self.pack / "config/log4j2.xml"
+        logging.parent.mkdir()
+        logging.write_bytes((pathlib.Path(__file__).resolve().parent.parent / "config/log4j2.xml").read_bytes())
+        network_logging_policy.prepare(self.pack)
         self.jar = self.pack / "mods/new.jar"
         with zipfile.ZipFile(self.jar, "w") as archive:
             archive.writestr("META-INF/neoforge.mods.toml", '[[mods]]\nmodId="emi"\ndisplayName="EMI"\nversion="new"\n')
