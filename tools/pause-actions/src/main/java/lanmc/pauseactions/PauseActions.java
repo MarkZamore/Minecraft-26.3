@@ -104,6 +104,9 @@ public final class PauseActions {
                 } catch (RuntimeException failure) {
                     LOGGER.error("Native LAN publication failed", failure);
                 }
+                if (published) {
+                    SteamWorldDiscovery.published(minecraft, server, port);
+                }
                 Component message = published
                         ? PublishCommand.getSuccessMessage(port)
                         : Component.translatable("commands.publish.failed");

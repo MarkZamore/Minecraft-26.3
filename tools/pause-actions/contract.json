@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "policyId": "lanmc.pause-actions",
   "modId": "lanmc_pause_actions",
-  "modVersion": "1.0.0",
-  "artifactPath": "mods/lanmc-pause-actions-1.0.0.jar",
+  "modVersion": "1.0.1",
+  "artifactPath": "mods/lanmc-pause-actions-1.0.1.jar",
   "sourceProject": "MarkZamore/Minecraft-26.3",
   "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/pause-actions",
   "screen": "net.minecraft.client.gui.screens.PauseScreen",
@@ -14,5 +14,14 @@
   "clientOnly": true,
   "requiredJvmProperties": {
     "minecraft.portable.identity.pauseLanRowEnabled": "false"
+  },
+  "steamDiscovery": {
+    "publisherClass": "minecraft.portable.identity.PortableSteamDiscoveryHooks",
+    "publisherMethod": "published",
+    "publisherDescriptor": "(Ljava/lang/Object;Ljava/lang/Object;I)V",
+    "notifyAfterSuccessfulNativePublish": true,
+    "optionalAtRuntime": true,
+    "preserveNativePublishOnFailure": true,
+    "transportVersionIndependent": true
   }
 }

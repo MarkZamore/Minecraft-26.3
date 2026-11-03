@@ -72,6 +72,8 @@ def verify(pack: Path, jar: Path, cache: Path, report: Path | None = None) -> di
         build.compile_java(sources, classpath, classes, inputs.java_version)
         shutil.copytree(HERE / 'probe' / 'resources', classes, dirs_exist_ok=True)
         runtime_args = ['-Xverify:all', '-Djava.awt.headless=true', f'-Duser.home={work / "home"}',
+                        f'-Dpauseactions.probe.minecraftVersion={inputs.minecraft_version}',
+                        f'-Dpauseactions.probe.neoforgeVersion={inputs.neoforge_version}',
                         '-Dmixin.service=proof.host.OfflineMixinService', '-classpath',
                         os.pathsep.join(str(path.resolve()) for path in [classes, *classpath]),
                         'proof.host.MixinEngineProbe', str(work / 'result'), str(jar.resolve()),
@@ -91,6 +93,28 @@ def verify(pack: Path, jar: Path, cache: Path, report: Path | None = None) -> di
         if native.get('nativeClassOriginalSha256') != button_sha or native.get('nativeClassOriginalBytes') != len(button_bytes):
             raise RuntimeError('Mixin engine transformed a different Button source from the verified patched-client provider')
         shutil.copy2(work / 'result' / 'Button.mixin-transformed.class', cache / 'Button.mixin-transformed.class')
+        # A separate JVM with the test helper physically absent proves that
+        # missing/older launcher support cannot prevent native hosting/UI feedback.
+        helper = classes / 'minecraft/portable/identity/PortableSteamDiscoveryHooks.class'
+        if not helper.is_file():
+            raise RuntimeError('Mandatory optional-discovery recorder fixture is missing')
+        hidden_helper = helper.with_suffix('.excluded')
+        helper.replace(hidden_helper)
+        try:
+            absent_args = [*runtime_args, 'discovery-helper-absent']
+            argument_file.write_text('\n'.join('"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"' for value in absent_args), encoding='utf-8')
+            absent = subprocess.run([build.jdk_tool('java'), '@' + str(argument_file)], cwd=work,
+                                    text=True, encoding='utf-8', errors='replace', capture_output=True, timeout=120)
+        finally:
+            hidden_helper.replace(helper)
+        (cache / 'native-missing-discovery-helper.log').write_text(absent.stdout + '\n' + absent.stderr, encoding='utf-8')
+        absent_records = [line.split(MARKER, 1)[1] for line in absent.stdout.splitlines() if MARKER in line]
+        if absent.returncode or len(absent_records) != 1:
+            raise RuntimeError('Native publication did not survive an absent optional discovery helper\n' + absent.stdout[-4500:] + absent.stderr[-2000:])
+        absent_proof = json.loads(absent_records[0])
+        if absent_proof.get('nativeClassOriginalSha256') != button_sha:
+            raise RuntimeError('Missing-helper proof used a different native Button target')
+        native['missingDiscoveryHelperProof'] = absent_proof['execution']
         negative_proofs = []
         for case in ['missing-field', 'wrong-field-type']:
             fault_args = [*runtime_args, case]

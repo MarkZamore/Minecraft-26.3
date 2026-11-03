@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-11-01",
+  "sourceBaselineCommit": "641b88a5d0faa9c491371296b3dc50e7f1d4c931",
+  "previousCancelledComponent": "lanmc_world_menu",
+  "component": {
+    "id": "lanmc_pause_actions",
+    "version": "1.0.0",
+    "sizeBytes": 11473,
+    "sha256": "74ae31bb88c6e486f40dd5ee2ab17ac8af5edd672a7c87a2094f3c37ed2614c8"
+  },
+  "nativeRuntime": {
+    "minecraft": "26.3",
+    "neoforge": "26.3.0.99",
+    "java": 25,
+    "nativeRuntimeInput": {
+      "clientJarName": "minecraft-client-patched-26.3.0.99.jar",
+      "clientJarSha256": "e5190c0484d5ddcc01b8db75ebc37bc52e718147a1aa8bcef83b69e62f2f7838",
+      "buttonClassSha256": "a3c5bf37aac82e360913080768fdf2005506afb9a0124e3466ee0a4d1bf6de7a",
+      "buttonClassSizeBytes": 4265
+    }
+  },
+  "nativeProof": {
+    "status": "PASS",
+    "actualMixinVersion": "0.8.7",
+    "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
+    "nativeClassOriginalBytes": 4265,
+    "nativeClassOriginalSha256": "a3c5bf37aac82e360913080768fdf2005506afb9a0124e3466ee0a4d1bf6de7a",
+    "nativeClassTransformedBytes": 5259,
+    "generatedNativeFieldReads": 1,
+    "generatedNativeFieldWrites": 1,
+    "baseline": {
+      "originalActionDispatch": true,
+      "nativeFinalField": true
+    },
+    "execution": {
+      "actualSocialScreenConstructorAndOnClose": true,
+      "worldSettingsActionCalls": 0,
+      "actualProductionPostAndRender": true,
+      "assertions": 112,
+      "recordingBoundaries": "publish(scope,int), Gui.setScreen, chat, narration, title and connection getter",
+      "rendererStarted": false,
+      "gameMainStarted": false,
+      "actualNativePublishedState": true,
+      "actualNativeGridButtonIdentityGeometryFocus": true
+    },
+    "fmlEnvironment": "Genuine FMLLoader CLIENT/PROD context constructor plus genuine empty LoadingModList; no discovery or game main",
+    "requiredAccessorNegativeCases": [
+      {
+        "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
+        "status": "REJECTED",
+        "failureType": "org.spongepowered.asm.mixin.transformer.throwables.MixinTransformerError",
+        "case": "missing-field"
+      },
+      {
+        "failureType": "org.spongepowered.asm.mixin.transformer.throwables.MixinTransformerError",
+        "status": "REJECTED",
+        "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
+        "case": "wrong-field-type"
+      }
+    ]
+  },
+  "pythonTests": 41,
+  "productionJvmMergeProof": {
+    "status": "PASS",
+    "actualCmlNativeBuildProcess": true,
+    "profile": "neoforge-26.3.0.99",
+    "nativeMainClass": "net.neoforged.fml.startup.Client",
+    "productionCompleteJvmArguments": true,
+    "effectiveFlag": "-Dminecraft.portable.identity.pauseLanRowEnabled=false",
+    "count": 1,
+    "loggingPreserved": true,
+    "harmlessJavaProbe": "FLAG=false\r\nKEEP=unchanged",
+    "minecraftMainStarted": false
+  },
+  "actualJavaAgentSuppressionProof": {
+    "status": "PASS",
+    "actualAgentPremainEnabled": true,
+    "propertyAfterPremain": "false",
+    "disabledTransformReturnedNull": true,
+    "positiveControlRowCalls": 1,
+    "falseRestoredReturnsNull": true,
+    "nativePauseClassSha256": "63192342b39deb312399ad5c0014fba31bb523ebda3f5b37f3c97877c6ef6864",
+    "minecraftClassesDefined": 0,
+    "gameStarted": false,
+    "adapterSha256": "81aa8d0f5210ffb2d981ac252df1a4cf4acc39fb8d0428bc1ed830e4797af542",
+    "sourceCommit": "f9b8967",
+    "scope": "Actual installed agent premain plus direct actual native Pause bytearray transformation; no Minecraft class definition/game or access to live registry files"
+  },
+  "launcherChanges": [],
+  "userWorldsModified": false,
+  "clientServerMainStarted": false,
+  "safetyChangesRequired": false
+}

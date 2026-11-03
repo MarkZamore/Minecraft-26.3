@@ -7,3 +7,10 @@
 - Публикация и verify-only обязаны вызывать read-only `network_logging_policy.verify(pack)` до сбора/проверки assets. Не вызывать prepare из генератора, CI-публикации или работающего лаунчера; не отключать этот guard ради новой версии.
 - Ownership только `config/log4j2.xml`, без нового `config/**`. Другие личные конфиги сохранять; отличающуюся старую копию этого файла обновление лаунчера сохраняет в PackConflicts.
 - На новой версии Minecraft/загрузчика повторно проверить настоящий caller, logger и четыре Throwable-сообщения; конфиг не исправляет причину разрыва связи и не доказывает игровой запуск.
+
+## Меню LAN и обнаружение Steam-миров
+
+- При импорте/обновлении Minecraft или e4steam сохранять pack-owned `tools/pause-actions`, контракт, native probe, обязательный JAR в active lock и отключение широкой строки в `launcher/jvm-args.txt`.
+- После успешного двухаргументного native publish обязателен вызов существующего `PortableSteamDiscoveryHooks.published(Object,Object,int)` через `SteamWorldDiscovery`; отказ/исключение publish его не вызывает. Ошибка optional helper не отменяет открытый мир и штатные сообщения. Не возвращать WorldOptionsScreen/autoPublish, не менять читы/режим/правила и не снимать metadata-фильтр ради появления мира.
+- Перед публикацией обязательны воспроизводимая сборка, native Mixin/actions (включая успех, отказ, throwing/absent helper и неизменность меню), управление, ограниченное логирование, active/legacy exact locks и verify-only. После обновления e4steam отдельно проверить фактический launcher helper/transport и handoff описания, не только fixtures; происхождение и версии записать в отчёт. Новый транспорт не дублировать в сборке и не заменять без согласования.
+- Контракт discovery не привязывать к точной версии Minecraft/e4steam. При несовместимом API останавливать подготовку/публикацию до исправления, не убирать интеграцию/проверки. Успех headless native-проверок не объявлять игровым или двухклиентским PASS.

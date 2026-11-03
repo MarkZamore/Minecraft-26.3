@@ -60,7 +60,8 @@ class PauseActionsPublicationTests(unittest.TestCase):
             # This suite validates delivery metadata. The separate native build
             # probe transforms and executes the real accessor and component.
             for name in ("lanmc/pauseactions/PauseActions.class",
-                         "lanmc/pauseactions/mixin/ButtonActionAccessor.class"):
+                         "lanmc/pauseactions/mixin/ButtonActionAccessor.class",
+                         "lanmc/pauseactions/SteamWorldDiscovery.class"):
                 if name != missing_class:
                     archive.writestr(name, b"publication-fixture-class")
             if nested_spoof:
@@ -102,13 +103,15 @@ class PauseActionsPublicationTests(unittest.TestCase):
             self.generate()
         self.assertFalse((self.root / "dist/pack-manifest.json").exists())
 
-    def test_current_and_future_runtime_descriptors_keep_the_button_contract_with_reviewed_logging(self):
+    def test_current_and_future_runtime_descriptors_keep_menu_and_discovery_with_reviewed_logging(self):
         for game, loader in (("26.3", "26.3.0.99"), ("26.4", "26.4.0.1")):
             with self.subTest(minecraft=game):
                 self.portable["minecraftVersion"] = game
                 self.portable["loader"]["version"] = loader
                 self.refresh_lock()
                 before = self.jvm.read_bytes()
+                self.assertEqual(generate_manifest.PAUSE_ACTIONS_CONTRACT["steamDiscovery"],
+                                 self.contract["steamDiscovery"])
                 if game != "26.3":
                     # The menu's forward contract remains valid independently;
                     # publishing a new runtime also needs its logging caller proof.
@@ -170,6 +173,39 @@ class PauseActionsPublicationTests(unittest.TestCase):
         self.source.write_text(json.dumps({**self.contract, "replaceInPlace": 1}), encoding="utf-8")
         self.assert_refused()
 
+    def test_removing_or_changing_both_discovery_contract_copies_refuses_publication(self):
+        changed_contracts = [{key: value for key, value in self.contract.items()
+                              if key != "steamDiscovery"}]
+        for key, value in self.contract["steamDiscovery"].items():
+            replacement = False if isinstance(value, bool) else "unrelated"
+            changed_contracts.append({**self.contract, "steamDiscovery": {
+                **self.contract["steamDiscovery"], key: replacement}})
+        changed_contracts.append({**self.contract, "steamDiscovery": {
+            **self.contract["steamDiscovery"], "e4steamVersion": "0.3.4"}})
+        for changed in changed_contracts:
+            with self.subTest(policy=changed):
+                self.source.write_text(json.dumps(changed), encoding="utf-8")
+                self.write_helper(policy=changed)
+                self.assert_refused()
+
+    def test_discovery_nested_boolean_cannot_be_replaced_with_an_integer(self):
+        for field, value in self.contract["steamDiscovery"].items():
+            if not isinstance(value, bool):
+                continue
+            with self.subTest(field=field):
+                changed = {**self.contract, "steamDiscovery": {
+                    **self.contract["steamDiscovery"], field: 1}}
+                self.source.write_text(json.dumps(changed), encoding="utf-8")
+                self.write_helper(policy=changed)
+                self.assert_refused()
+
+    def test_old_embedded_contract_cannot_restore_disconnected_native_publication(self):
+        old = {key: value for key, value in self.contract.items() if key != "steamDiscovery"}
+        old["modVersion"] = "1.0.0"
+        old["artifactPath"] = "mods/lanmc-pause-actions-1.0.0.jar"
+        self.write_helper(policy=old)
+        self.assert_refused()
+
     def test_accessor_must_be_required_and_registered_only_on_the_client(self):
         mutations = ({"required": False}, {"client": []}, {"client": ["AnotherAccessor"]},
                      {"server": ["ButtonActionAccessor"]}, {"mixins": ["ButtonActionAccessor"]},
@@ -183,9 +219,10 @@ class PauseActionsPublicationTests(unittest.TestCase):
         self.write_helper(registered=False)
         self.assert_refused()
 
-    def test_missing_component_or_accessor_class_refuses_publication(self):
+    def test_missing_component_accessor_or_discovery_bridge_class_refuses_publication(self):
         for missing in ("lanmc/pauseactions/PauseActions.class",
-                        "lanmc/pauseactions/mixin/ButtonActionAccessor.class"):
+                        "lanmc/pauseactions/mixin/ButtonActionAccessor.class",
+                        "lanmc/pauseactions/SteamWorldDiscovery.class"):
             with self.subTest(missing=missing):
                 self.write_helper(missing_class=missing)
                 self.assert_refused()

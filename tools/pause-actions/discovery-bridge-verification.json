@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "minecraft": "26.3",
+  "neoforge": "26.3.0.99",
+  "java": 25,
+  "packJarSha256": "c77a9ad6fe4506dffd50853d41210c972e0b53437357ac2afa6bad5d74313f6c",
+  "packBridgeClassSha256": "1cd8e349371d4e2eaaf56a632e0e71324db0da9b763b0acb092c78a66bf177fd",
+  "agentSha256": "b9f08644ba2483d1ce504cf3112d5ede6385f73d90fac60b7dd5d115ab98f0b9",
+  "embeddedHooksSha256": "d031b6f2ad6f5e699d658bf14c44249c748a88cf8a2d89cd6e855f251033fb6b",
+  "hookClassSha256": "54b15071131ea7e7a6331fb59b14f778aad60e6b19341a6aaf7583711a0bd70b",
+  "loggingLibraries": [
+    {
+      "name": "logging-1.7.12.jar",
+      "sha256": "3c7ac9742fa98c773275379eb1046c048b5d2ee989152a8c69e7ba696c3f8538"
+    },
+    {
+      "name": "slf4j-api-2.0.17.jar",
+      "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+    }
+  ],
+  "executions": [
+    {
+      "transportResourceAndProperty": "0.3.4",
+      "before": 0,
+      "after": 1,
+      "metadataWrites": 3,
+      "actualPackagedBridge": true,
+      "actualBootstrapHooks": true,
+      "protocolVersionOwnerNegatives": true,
+      "nativeWorkerConfinement": true,
+      "realSteamStarted": false,
+      "gameStarted": false
+    },
+    {
+      "transportResourceAndProperty": "later-fixture-version",
+      "before": 0,
+      "after": 1,
+      "metadataWrites": 3,
+      "actualPackagedBridge": true,
+      "actualBootstrapHooks": true,
+      "protocolVersionOwnerNegatives": true,
+      "nativeWorkerConfinement": true,
+      "realSteamStarted": false,
+      "gameStarted": false
+    }
+  ],
+  "scope": "Actual packaged bridge plus actual installed bootstrap publisher/readWorlds; explicit in-memory Minecraft/Steam service boundaries. No game main, renderer, native Steam, socket, world or real peer. Changed fixture version proves no PACK bridge pin, not compatibility with an unknown future transport interface."
+}

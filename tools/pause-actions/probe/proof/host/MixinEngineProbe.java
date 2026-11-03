@@ -14,7 +14,8 @@ public final class MixinEngineProbe {
     public static void main(String[] args) throws Exception {
         initializeFmlEnvironment();
         byte[] original = bytes(TARGET);
-        String negative = args.length > 6 ? args[6] : null;
+        String mode = args.length > 6 ? args[6] : null;
+        String negative = "discovery-helper-absent".equals(mode) ? null : mode;
         if (negative != null) {
             ClassNode malformed = new ClassNode(); new ClassReader(original).accept(malformed, 0);
             var fields = malformed.fields.stream().filter(field -> field.name.equals("onPress")).toList();
@@ -77,7 +78,9 @@ public final class MixinEngineProbe {
         var constructor = loader.getDeclaredConstructor(ClassLoader.class, String[].class, dist, boolean.class, Path.class);
         constructor.setAccessible(true);
         @SuppressWarnings({"unchecked", "rawtypes"}) Object client = Enum.valueOf((Class)dist, "CLIENT");
-        Object context = constructor.newInstance(MixinEngineProbe.class.getClassLoader(), new String[]{"--fml.neoForgeVersion", "26.3.0.99", "--fml.mcVersion", "26.3"},
+        String minecraft = Objects.requireNonNull(System.getProperty("pauseactions.probe.minecraftVersion"), "selected Minecraft version");
+        String neoforge = Objects.requireNonNull(System.getProperty("pauseactions.probe.neoforgeVersion"), "selected NeoForge version");
+        Object context = constructor.newInstance(MixinEngineProbe.class.getClassLoader(), new String[]{"--fml.neoForgeVersion", neoforge, "--fml.mcVersion", minecraft},
                 client, true, Path.of(".").toAbsolutePath().normalize());
         Class<?> modList = Class.forName("net.neoforged.fml.loading.LoadingModList");
         Object emptyMods = modList.getMethod("of", List.class, List.class, List.class, List.class, List.class, Map.class)

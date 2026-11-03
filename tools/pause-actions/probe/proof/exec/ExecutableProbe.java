@@ -52,6 +52,12 @@ public final class ExecutableProbe {
         Path jar = Path.of(args[1]);
         Component nativeCaption = nativeContract(jar);
         metadata(jar, args);
+        boolean helperAbsent = args.length > 6 && args[6].equals("discovery-helper-absent");
+        Class<?> discovery = null;
+        try { discovery = Class.forName("minecraft.portable.identity.PortableSteamDiscoveryHooks", false, ClassLoader.getSystemClassLoader()); }
+        catch (ClassNotFoundException expected) { check(helperAbsent, "discovery fixture unexpectedly missing"); }
+        check(helperAbsent == (discovery == null), "fresh-JVM missing-helper mode has no discoverable helper");
+        if (discovery != null) check((Integer) discovery.getField("calls").get(null) == 0, "Object-only discovery recorder starts unused");
         Field singleton = field(Minecraft.class, "instance");
         Object previous = singleton.get(null);
         check(previous == null, "offline probe starts without a constructed Minecraft client");
@@ -103,6 +109,11 @@ public final class ExecutableProbe {
             check(server.isPublished() && gui.screen() == null && original.get() == 0, "success publishes and closes pause without invoking original WorldOptions action");
             check(chat.messages.size() == 1 && chat.messages.getLast().equals(net.minecraft.server.commands.PublishCommand.getSuccessMessage(server.lastPort))
                     && narrator.messages.getLast() == chat.messages.getLast() && minecraft.titles == 1, "native success-message factory reaches chat/narrator/title boundaries");
+            if (discovery != null) {
+                check((Integer) discovery.getField("calls").get(null) == 1, "successful native callback notifies discovery exactly once");
+                check(discovery.getField("minecraft").get(null) == minecraft && discovery.getField("server").get(null) == server
+                        && (Integer) discovery.getField("port").get(null) == server.lastPort, "discovery receives the exact successfully published client/server/port");
+            } else check(server.isPublished(), "missing helper preserves successful hosting and feedback");
             press(cell.world); check(server.attempts == 1, "stale callback cannot publish a second time");
             current(gui, cell.pause); render(cell.pause);
             check(key(cell.world).equals(REPORTS), "reopened published host sees Reports in the same cell");
@@ -146,12 +157,29 @@ public final class ExecutableProbe {
             check(accessor(otherWorld).lanmc$getOnPress() == otherAction && key(otherWorld).equals(ORIGINAL), "non-pause screen with exact native caption is untouched");
             check(server.otherOverloadCalls == 0 && original.get() == 0, "no settings-changing overload or original WorldOptions callback executed");
             check(!(gui.screen() instanceof WorldOptionsScreen), "final navigation never exposes WorldOptions");
+            if (discovery != null) {
+                check((Integer) discovery.getField("calls").get(null) == 1, "stale, published-host, guest, refused and exceptional paths do not notify discovery");
+                discovery.getField("fail").set(null, true);
+                scope(server, MultiplayerScope.OFF); server.succeed = true;
+                current(gui, resized.pause); render(resized.pause);
+                int messagesBefore = chat.messages.size(), titlesBefore = minecraft.titles;
+                press(resized.world);
+                check(server.isPublished() && server.attempts == 6 && gui.screen() == null, "throwing discovery helper cannot undo successful native publication or its navigation");
+                check(chat.messages.size() == messagesBefore + 1 && narrator.messages.getLast() == chat.messages.getLast()
+                        && minecraft.titles == titlesBefore + 1 && chat.messages.getLast().equals(net.minecraft.server.commands.PublishCommand.getSuccessMessage(server.lastPort)), "throwing discovery helper preserves native success feedback");
+                check((Integer) discovery.getField("calls").get(null) == 2 && discovery.getField("server").get(null) == server
+                        && (Integer) discovery.getField("port").get(null) == server.lastPort, "throwing optional helper was reached exactly once with the current publication");
+                discovery.getField("fail").set(null, false);
+            }
         } finally { singleton.set(null, previous); }
         check(Minecraft.getInstance() == previous, "actual singleton restored");
-        return Map.of("assertions", assertions, "actualProductionPostAndRender", true, "actualNativeGridButtonIdentityGeometryFocus", true,
+        var execution = new LinkedHashMap<String, Object>();
+        execution.putAll(Map.of("assertions", assertions, "actualProductionPostAndRender", true, "actualNativeGridButtonIdentityGeometryFocus", true,
                 "actualNativePublishedState", true, "actualSocialScreenConstructorAndOnClose", true,
                 "worldSettingsActionCalls", original.get(), "recordingBoundaries", "publish(scope,int), Gui.setScreen, chat, narration, title and connection getter",
-                "gameMainStarted", false, "rendererStarted", false);
+                "gameMainStarted", false, "rendererStarted", false));
+        execution.put("discoveryNotification", helperAbsent ? "missing helper preserves hosting and feedback" : "exact success-only Object API notification; throwing helper preserves hosting and feedback");
+        return execution;
     }
 
     private static Component nativeContract(Path jar) throws Exception {
@@ -189,12 +217,38 @@ public final class ExecutableProbe {
         verifyNativePublication(integrated);
         try (ZipFile zip = new ZipFile(jar.toFile())) {
             int publicationCalls = 0;
+            int discoveryCalls = 0;
+            boolean discoveryBridge = false;
             boolean forbiddenReference = false;
             for (var entry : zip.stream().filter(e -> e.getName().endsWith(".class")).toList()) {
                 ClassNode component = new ClassNode(); new ClassReader(zip.getInputStream(entry)).accept(component, 0);
                 if (component.name.equals("lanmc/pauseactions/PauseActions")) {
                     check(clientOnly(annotation(component, "/Mod;"), "dist"), "packaged mod entry point is explicitly client-only");
                     check(clientOnly(annotation(component, "/EventBusSubscriber;"), "value"), "packaged event subscriber is explicitly client-only");
+                }
+                if (component.name.equals("lanmc/pauseactions/PauseActions$PauseAction")) {
+                    verifyDiscoveryNotification(component);
+                    MethodNode action = named(component, "onPress", "(Lnet/minecraft/client/gui/components/Button;)V");
+                    MethodInsnNode notification = ops(action).stream().filter(i -> i instanceof MethodInsnNode call && call.owner.equals(DISCOVERY)).map(i -> (MethodInsnNode)i).findFirst().orElseThrow();
+                    action.instructions.remove(notification);
+                    ClassNode missingNotification = component;
+                    expectRejected(() -> verifyDiscoveryNotification(missingNotification), "one discovery notification", "removing discovery notification must fail publication even when metadata is retained");
+                    ClassNode inverted = new ClassNode(); new ClassReader(zip.getInputStream(entry)).accept(inverted, 0);
+                    MethodNode invertedAction = named(inverted, "onPress", "(Lnet/minecraft/client/gui/components/Button;)V");
+                    var body = ops(invertedAction); int callIndex = -1;
+                    for (int i = 0; i < body.size(); i++) if (body.get(i) instanceof MethodInsnNode call && call.owner.equals(DISCOVERY)) callIndex = i;
+                    ((JumpInsnNode)body.get(callIndex - 4)).setOpcode(Opcodes.IFNE);
+                    expectRejected(() -> verifyDiscoveryNotification(inverted), "successful publication result", "inverted discovery notification guard must fail publication");
+                    // Continue ordinary scanning with the unmodified packaged bytecode.
+                    component = new ClassNode(); new ClassReader(zip.getInputStream(entry)).accept(component, 0);
+                }
+                if (component.name.equals(DISCOVERY)) {
+                    discoveryBridge = true;
+                    check(component.fields.stream().noneMatch(f -> f.desc.contains("link/e4steam")), "bridge has no direct e4steam field dependency");
+                    for (MethodNode method : component.methods) for (AbstractInsnNode instruction : method.instructions) {
+                        check(!(instruction instanceof MethodInsnNode call && call.owner.startsWith("link/e4steam/"))
+                                && !(instruction instanceof TypeInsnNode type && type.desc.startsWith("link/e4steam/")), "bridge survives transport replacement without a direct e4steam binary dependency");
+                    }
                 }
                 for (MethodNode method : component.methods) for (AbstractInsnNode instruction : method.instructions) {
                     if (instruction instanceof TypeInsnNode type && type.desc.equals("net/minecraft/client/gui/screens/WorldOptionsScreen")) forbiddenReference = true;
@@ -206,13 +260,38 @@ public final class ExecutableProbe {
                                 || Set.of("removeWidget", "clearWidgets", "addRenderableWidget", "addWidget", "addRenderableOnly", "removeListener", "addListener").contains(call.name)) forbiddenReference = true;
                         check(!Set.of("setDefaultGameType", "setGameType", "setDifficulty", "setCommandsAllowed", "setAllowCommands", "applyChanges").contains(call.name), "component must not call a world-settings mutator");
                         if (call.name.equals("publishServer")) { publicationCalls++; check(call.desc.equals("(Lnet/minecraft/server/MinecraftServer$MultiplayerScope;I)Z"), "packaged component calls only native two-argument publication"); }
+                        if (call.owner.equals(DISCOVERY) && call.name.equals("published")) discoveryCalls++;
                     }
                 }
             }
             check(publicationCalls == 1, "component has one exact native publication site");
+            check(discoveryBridge && discoveryCalls == 1, "component ships its required optional integration and one discovery notification site");
             check(!forbiddenReference, "component contains no WorldOptions reference or screen-widget removal/addition call");
         }
         return caption;
+    }
+    private static final String DISCOVERY = "lanmc/pauseactions/SteamWorldDiscovery";
+    private static void verifyDiscoveryNotification(ClassNode action) {
+        MethodNode method = named(action, "onPress", "(Lnet/minecraft/client/gui/components/Button;)V");
+        var body = ops(method);
+        var notifications = body.stream().filter(i -> i instanceof MethodInsnNode call && call.owner.equals(DISCOVERY)).toList();
+        require(notifications.size() == 1, "expected one discovery notification in the native callback");
+        int index = body.indexOf(notifications.getFirst());
+        MethodInsnNode notify = (MethodInsnNode)notifications.getFirst();
+        require(notify.getOpcode() == Opcodes.INVOKESTATIC && notify.name.equals("published")
+                && notify.desc.equals("(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/server/IntegratedServer;I)V"), "discovery notification API changed");
+        var publications = body.stream().filter(i -> i instanceof MethodInsnNode call && call.name.equals("publishServer")).toList();
+        require(publications.size() == 1 && body.indexOf(publications.getFirst()) < index, "discovery notification precedes native publication");
+        int nativeIndex = body.indexOf(publications.getFirst());
+        require(index >= 5 && body.get(nativeIndex - 3) instanceof VarInsnNode server && server.getOpcode() == Opcodes.ALOAD
+                && body.get(nativeIndex - 1) instanceof VarInsnNode port && port.getOpcode() == Opcodes.ILOAD
+                && body.get(index - 2) instanceof VarInsnNode sameServer && sameServer.getOpcode() == Opcodes.ALOAD && sameServer.var == server.var
+                && body.get(index - 1) instanceof VarInsnNode samePort && samePort.getOpcode() == Opcodes.ILOAD && samePort.var == port.var,
+                "discovery notification must retain the exact native server/port arguments");
+        require(body.get(nativeIndex + 1) instanceof VarInsnNode result && result.getOpcode() == Opcodes.ISTORE
+                && body.get(index - 5) instanceof VarInsnNode test && test.getOpcode() == Opcodes.ILOAD && test.var == result.var
+                && body.get(index - 4) instanceof JumpInsnNode guard && guard.getOpcode() == Opcodes.IFEQ
+                && method.instructions.indexOf(guard.label) > method.instructions.indexOf(notify), "discovery notification must be gated by the successful publication result");
     }
     private static final String PAUSE = "net/minecraft/client/gui/screens/PauseScreen", WORLD = "net/minecraft/client/gui/screens/WorldOptionsScreen";
     private static void verifyNativeProducer(ClassNode pause) {

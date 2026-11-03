@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-11-03T12:40:53.157664+00:00",
+  "repository": "https://github.com/MarkZamore/Minecraft-26.3",
+  "commit": "ffcd677e3b19de014d974662ce09aa98676cab49",
+  "portable": {
+    "schemaVersion": 1,
+    "minecraftVersion": "26.3",
+    "loader": {
+      "type": "neoforge",
+      "version": "26.3.0.99"
+    }
+  },
+  "activeLockVerified": true,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sizeBytes": 67,
+      "sha256": "d5064c3d823b7bdb0b95dd9425457c2f871826eb0f324ca1c64e488da11c6525"
+    },
+    {
+      "path": ".github/workflows/publish.yml",
+      "sizeBytes": 5992,
+      "sha256": "f5bce2230f9526b6a3e5a6e21db42bbfe5eaa39e286f112bbb81a1b5723e0fe1"
+    },
+    {
+      "path": ".gitignore",
+      "sizeBytes": 27,
+      "sha256": "21ae239beed243ca9fd5098b77fa7f59eea8a09b45cdbd14908a67b77c66f3e7"
+    },
+    {
+      "path": "AGENTS.md",
+      "sizeBytes": 1916,
+      "sha256": "c190dc1835757d3f45ca4808e8bb2488b52d376ba4048cfc59296f807ac772f9"
+    },
+    {
+      "path": "README.md",
+      "sizeBytes": 12801,
+      "sha256": "e0aaea7a10ae52cca95d336fd3c1a5bcf18953c3c0c3e5594abd34c04679d2ab"
+    },
+    {
+      "path": "config/log4j2.xml",
+      "sizeBytes": 4617,
+      "sha256": "9e7b9918b6ede54f7393ed3d307e51a2edb032b98c12f069f5df976bcf940b89"
+    },
+    {
+      "path": "launcher/controls-preset.txt",
+      "sizeBytes": 3005,
+      "sha256": "b59348d914d666b1c0b6739a50f267d944180bd3e647a1c897f62ce0ba069524"
+    },
+    {
+      "path": "launcher/jvm-args.txt",
+      "sizeBytes": 99,
+      "sha256": "d03b01d3d9f168d7e2ff0d8740c2d33b4ecf75daa0f40ff1754b5288a09d3ca4"
+    },
+    {
+      "path": "launcher/pack-owned.txt",
+      "sizeBytes": 18,
+      "sha256": "20b244ac6cfb89d344b37b9ac4d077bd368f5f0ac391541801d06b22464313b5"
+    },
+    {
+      "path": "library/README.md",
+      "sizeBytes": 2512,
+      "sha256": "441cd2a2a00481901f0494e38fa1dcb5b15881cb5a9729294274405ebe1b6d50"
+    },
+    {
+      "path": "library/content.json",
+      "sizeBytes": 1524,
+      "sha256": "66e4a9e6aafb70e09d05fcd6795f7089576769087d4b511dac3c1ce3004f4631"
+    },
+    {
+      "path": "library/mod-pages.json",
+      "sizeBytes": 329,
+      "sha256": "93166ed1072f8198a135a2d6b9cc104ed4b1d50c4542f37f218f13ef67552e35"
+    },
+    {
+      "path": "library/preview.jpg",
+      "sizeBytes": 65104,
+      "sha256": "012eef42eb67431d31a88896311123645e910fc52b0b70721f577905a1597ded"
+    },
+    {
+      "path": "mods/emi-1.1.24-e7edb3a+26.3+neoforge.jar",
+      "sizeBytes": 1111167,
+      "sha256": "a74ffcc975700740b16169e96ed179c88fc121a41f84345c34ed6e4f513296db"
+    },
+    {
+      "path": "mods/iris-neoforge-1.11.7+mc26.3.jar",
+      "sizeBytes": 2804761,
+      "sha256": "2260506334a17ac566ea30169ab491201208f55c1c7212bb987bc0c7c59a8d93"
+    },
+    {
+      "path": "mods/lanmc-pause-actions-1.0.0.jar",
+      "sizeBytes": 11473,
+      "sha256": "74ae31bb88c6e486f40dd5ee2ab17ac8af5edd672a7c87a2094f3c37ed2614c8"
+    },
+    {
+      "path": "mods/sodium-neoforge-0.9.3-beta.1+mc26.3.jar",
+      "sizeBytes": 1209577,
+      "sha256": "2d6dc7b223f93ce5c5fcedbddacdeb175c1e65484a5bc115e954465aebc8291f"
+    },
+    {
+      "path": "portable-pack.json",
+      "sizeBytes": 125,
+      "sha256": "0239166146e3b0f2b4d1b284af832fac289fa85f67214c19aaf44d1cc6e22a89"
+    },
+    {
+      "path": "tools/SHADERS.md",
+      "sizeBytes": 6902,
+      "sha256": "5c2941cd31193c3e2a81289c3dd74d82c57fe547602c1c7a8d7dccd5f314096c"
+    },
+    {
+      "path": "tools/UPGRADE-26.3.md",
+      "sizeBytes": 9185,
+      "sha256": "bc49ec948abec6e197e0145ba327b79198851e4f13c443dd235db91565e41a7f"
+    },
+    {
+      "path": "tools/distribution-lock.json",
+      "sizeBytes": 2870,
+      "sha256": "f19f396fc031d7443b340d8a10822ff56e9d3b422977e02ea38f2a17f760a1a9"
+    },
+    {
+      "path": "tools/generate_manifest.py",
+      "sizeBytes": 25519,
+      "sha256": "0b1ad6160f4ef66da73738216b95ac91ff5b20a1813fd8cb7e5c7baa903c0b44"
+    },
+    {
+      "path": "tools/keybinds/allowed-conflicts.json",
+      "sizeBytes": 4537,
+      "sha256": "a42f2de1b0ed69ecd3b9f1cc8e12768cb2b86fcc18428fe0c1029a6f96bdad9e"
+    },
+    {
+      "path": "tools/keybinds/build_preset.py",
+      "sizeBytes": 2210,
+      "sha256": "db42955256eaf3d161fd1a647db9ba275ef0f0042695c1f8689ada9ad8474d31"
+    },
+    {
+      "path": "tools/keybinds/check_preset.py",
+      "sizeBytes": 4140,
+      "sha256": "bcde14c942386e69359e28c8229b253615fecba4c940a01cb3bf7cbeab128289"
+    },
+    {
+      "path": "tools/keybinds/design.md",
+      "sizeBytes": 8583,
+      "sha256": "9b5f94389c33eb91035e11f4e050519a33bedb61f444b9df3ba8284a0b526eaf"
+    },
+    {
+      "path": "tools/keybinds/registered-keys.json",
+      "sizeBytes": 8031,
+      "sha256": "fa7f6cf68fd118bbedbe029120e40f918116ef5b8890b1c17e70ac06aad06b97"
+    },
+    {
+      "path": "tools/keybinds/scan_keys.py",
+      "sizeBytes": 9898,
+      "sha256": "d65efd8541721a0969112c2144deb75f3e287b6e6198f4acc990b633654a3785"
+    },
+    {
+      "path": "tools/keybinds/test_preset.py",
+      "sizeBytes": 4061,
+      "sha256": "e4c49dbdb059335513251e55e58e5461429f5d3da2c7345d1d69934dc2bf09e4"
+    },
+    {
+      "path": "tools/legacy-files.json",
+      "sizeBytes": 395,
+      "sha256": "547de73f032e05711008cd6866f23bbe01412319c0baa01878927f42a88fbb83"
+    },
+    {
+      "path": "tools/network-logging-policy.json",
+      "sizeBytes": 628,
+      "sha256": "d635c3fe237d448f582689c3bb618858e3f6ade5df4126e10c8a04c9b7d83032"
+    },
+    {
+      "path": "tools/network-logging-proof/ConnectionLogProbe.java",
+      "sizeBytes": 870,
+      "sha256": "a02b05271b1127a21b49c04f8e0da0fa55640376b67166ddf80fb99d47745d99"
+    },
+    {
+      "path": "tools/network-logging-proof/README.md",
+      "sizeBytes": 2060,
+      "sha256": "ccde8edeee17fe8fca680c5e0b9410303226c3552c980c7d031e2064628ec615"
+    },
+    {
+      "path": "tools/network-logging-proof/all-current-callers-proof.json",
+      "sizeBytes": 4808,
+      "sha256": "bfccbc1bf6818e83786089f1a927fb9f8d45ee05033559513421971443e8f52b"
+    },
+    {
+      "path": "tools/network-logging-proof/connection-throwable-filter.probe.xml",
+      "sizeBytes": 567,
+      "sha256": "580e015e84d0953b3de9432b1bc5edc80985247d9bbb4874c00b4f12f3819c32"
+    },
+    {
+      "path": "tools/network-logging-proof/filter-probe-results.json",
+      "sizeBytes": 638,
+      "sha256": "cafa20ce2ec29b0d14fa3f1e27fd98bea1f55126b168b8d84e1327b97a0aeecb"
+    },
+    {
+      "path": "tools/network_logging_policy.py",
+      "sizeBytes": 13396,
+      "sha256": "e35ce689e72ef0829a26e5e6108995d0702deb124f1e6e4a7cea2d3475d9f529"
+    },
+    {
+      "path": "tools/pack_library.py",
+      "sizeBytes": 16329,
+      "sha256": "0b515b11547d85f8c063f0a4d5d531f1a91ae27815617b8e5d2ac0630d3cda65"
+    },
+    {
+      "path": "tools/pause-actions/README.md",
+      "sizeBytes": 9444,
+      "sha256": "c1c740ab507bafc7ed23cbcd3ab1f5fa0fb240faf3291fb47b74312bf2cf469e"
+    },
+    {
+      "path": "tools/pause-actions/baseline-641b88a.json",
+      "sizeBytes": 5881,
+      "sha256": "a2166b095bd80653def0da2fe884371c2f05d02282f7de1baae9faf567351cb7"
+    },
+    {
+      "path": "tools/pause-actions/build.py",
+      "sizeBytes": 21734,
+      "sha256": "87a3f8fe81a518014eb462380a30adf1f73ab7ce630d865fbba9ac509b6f0888"
+    },
+    {
+      "path": "tools/pause-actions/contract.json",
+      "sizeBytes": 682,
+      "sha256": "af171e681f27bacc64928a08e44b888972b5f478d76014c3ea424110eb5f694e"
+    },
+    {
+      "path": "tools/pause-actions/probe/README.md",
+      "sizeBytes": 5764,
+      "sha256": "6e251ba07042036f2a31911ce17f5ff8d9d8f299675c4aa805136b9d381777bc"
+    },
+    {
+      "path": "tools/pause-actions/probe/proof/exec/ExecutableProbe.java",
+      "sizeBytes": 35964,
+      "sha256": "b38bac501dd5288d9fad33c7b7fc061774f54aa13899bc0b2587ef1842ade9c7"
+    },
+    {
+      "path": "tools/pause-actions/probe/proof/host/MixinEngineProbe.java",
+      "sizeBytes": 8995,
+      "sha256": "c6a660deb804c86afde2d0e528c1c93e5f526bfc82bf43bdaab67063db73d112"
+    },
+    {
+      "path": "tools/pause-actions/probe/proof/host/OfflineMixinService.java",
+      "sizeBytes": 2965,
+      "sha256": "baa140c340a9d0ca82a892b247a538fa7432da862392214d6f61350dfdccaf49"
+    },
+    {
+      "path": "tools/pause-actions/probe/proof/host/OfflineProperties.java",
+      "sizeBytes": 836,
+      "sha256": "94e8a3cf7170090ef8f9151971686536317ee738332cd2ce95ba1e5a30c287ae"
+    },
+    {
+      "path": "tools/pause-actions/probe/resources/META-INF/services/org.spongepowered.asm.service.IGlobalPropertyService",
+      "sizeBytes": 29,
+      "sha256": "82704e7858e3291fed63836a1482892cdf7ec9cc16374474e56c3490230f272e"
+    },
+    {
+      "path": "tools/pause-actions/probe/resources/META-INF/services/org.spongepowered.asm.service.IMixinService",
+      "sizeBytes": 31,
+      "sha256": "0d26884f6a328a489cdcf821e051dcf14caf401b593cdd62b1a446d765053497"
+    },
+    {
+      "path": "tools/pause-actions/src/main/java/lanmc/pauseactions/PauseActions.java",
+      "sizeBytes": 5113,
+      "sha256": "90021ec43caaecf7efa29e751a15c6f3202eff167408290db311aa20f716db88"
+    },
+    {
+      "path": "tools/pause-actions/src/main/java/lanmc/pauseactions/mixin/ButtonActionAccessor.java",
+      "sizeBytes": 594,
+      "sha256": "a43ce4afbcfa58dce6fc95f1618d10300ca362347a2bfd38b69d0a8da52febcf"
+    },
+    {
+      "path": "tools/pause-actions/src/main/resources/META-INF/LICENSE.txt",
+      "sizeBytes": 1067,
+      "sha256": "0e5114b448db102d0680fe41afaf19c000dc88c42a8b26bceff98477ad09e22a"
+    },
+    {
+      "path": "tools/pause-actions/src/main/resources/META-INF/neoforge.mods.toml.in",
+      "sizeBytes": 663,
+      "sha256": "040f26e0f7a3e71db9603574b3990e0632d020cd6a63267e389aa47058961477"
+    },
+    {
+      "path": "tools/pause-actions/src/main/resources/lanmc-pause-actions.mixins.json.in",
+      "sizeBytes": 228,
+      "sha256": "4f78d847a8309b0fef2f807701f1f9125cf4188a32c2147401627e43c27c2288"
+    },
+    {
+      "path": "tools/pause-actions/src/main/resources/pack.mcmeta.in",
+      "sizeBytes": 119,
+      "sha256": "a3bdc537113b8f1bb64512a18406b69437a4647ff78d3bb9d914b1f88fe559cd"
+    },
+    {
+      "path": "tools/pause-actions/verification.json",
+      "sizeBytes": 3750,
+      "sha256": "7da48e4d8fd059c856f401ae5762227235f01a9cd0120039c1b3dc7b4dbac3b0"
+    },
+    {
+      "path": "tools/pause-actions/verify_native.py",
+      "sizeBytes": 8562,
+      "sha256": "435a55b9d538066d6a53a283711bfb31e79634aa36baa5384e8bc6c12f604121"
+    },
+    {
+      "path": "tools/shader-support-emi-baseline.json",
+      "sizeBytes": 4555,
+      "sha256": "bc9e003b82642c153dcba421eb1c71798bd115a1cfa40ded72dc1262c5af97ea"
+    },
+    {
+      "path": "tools/shader-support-runtime.json",
+      "sizeBytes": 4184,
+      "sha256": "345d6d9b8048b39ab2f58fdabd0db0c0b2e0e205d331649fe886e04232f2916b"
+    },
+    {
+      "path": "tools/shader-support-source.json",
+      "sizeBytes": 3664,
+      "sha256": "159bac6bab3f51c168f2329434f29dbf4f9d0ca69f6d276172d9f2df7981ad37"
+    },
+    {
+      "path": "tools/test_logging_policy.py",
+      "sizeBytes": 9673,
+      "sha256": "c2bfc9132cacc44afecc56d69fcfbe3f98e5e3827ea1ec2554042df453ef692e"
+    },
+    {
+      "path": "tools/test_manifest_upgrade.py",
+      "sizeBytes": 4432,
+      "sha256": "95c96e0ba0651bc61f634d9ac638d84dc23b3a12bef3bbd1d7c4d7f7e5fbe99b"
+    },
+    {
+      "path": "tools/test_pack_library.py",
+      "sizeBytes": 9297,
+      "sha256": "ad0336edbda993738c4d63a0051058b49e56bcb0931c84669a5d2d508294d237"
+    },
+    {
+      "path": "tools/test_pause_actions.py",
+      "sizeBytes": 13076,
+      "sha256": "ee705314dd6dbfebf57edc497bdbfe335f696bc8357acb03d7ce5d9f872b7626"
+    },
+    {
+      "path": "tools/upgrades/minecraft-26.2-baseline.json",
+      "sizeBytes": 6276,
+      "sha256": "357f9d4c3f81f8714b6450f79cf6bf5e213dc59b0808872f911d6b0fb6837006"
+    }
+  ]
+}

@@ -4,11 +4,11 @@ license="MIT"
 
 [[mods]]
 modId="lanmc_pause_actions"
-version="1.0.0"
+version="1.0.1"
 displayName="Pause Actions"
 authors="MarkZamore"
 displayURL="https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/pause-actions"
-description="""Reuses the native pause-menu button for Open to LAN and Player Reporting."""
+description="""Reuses the native pause-menu button for Open to LAN and Player Reporting, and notifies the managed Steam world discovery publisher after successful publication."""
 
 [[mixins]]
 config="lanmc-pause-actions.mixins.json"

@@ -3,7 +3,7 @@
 From the pack source root, with the pack's JDK (currently Java 25):
 
 ```text
-python tools/pause-actions/verify_native.py --jar path/to/lanmc-pause-actions-1.0.0.jar
+python tools/pause-actions/verify_native.py --jar path/to/lanmc-pause-actions-1.0.1.jar
 ```
 
 Use `--report .cache/pause-actions/native-verification.json` for a compact report.
@@ -74,6 +74,26 @@ another screen or a renderer. Chat, narration and title update boundaries record
 the exact native publication success/failure message. Failure, exception,
 feedback failure, retry and stale/replaced-screen paths are exercised. The real
 Minecraft singleton is restored in a `finally` block.
+
+The packaged successful-publication callback must notify its own
+`SteamWorldDiscovery.published(Minecraft, IntegratedServer, int)` once, with the
+same native server and port. The test-only Object API recorder has the existing
+launcher's `PortableSteamDiscoveryHooks` name but starts no Steam client. The
+probe checks exactly one notification on success, none on refusal, exception,
+stale callback, guest or already published host, and preserved native success
+feedback/navigation when the optional helper throws. A second fresh JVM runs
+with that recorder class physically excluded from its classpath and requires
+hosting, feedback and the same menu tests to succeed without any helper.
+The recorder is probe input only and is forbidden in the packaged component.
+
+ASM additionally requires one success-result-guarded notification after the
+native publication site, using the same server/port locals. Removing that call
+or inverting its success condition is rejected even if all packaged metadata
+remains present. The bridge may not directly link e4steam classes: updating
+the centrally delivered transport cannot leave a baked-in e4steam binary API
+inside this pack. Native publication and these discovery checks are mandatory
+for every runtime resolved from `portable-pack.json`; no current-version-only
+branch can silently skip them after a Minecraft upgrade.
 
 The native `PauseScreen.WORLD_OPTIONS` component and unique
 `createPauseMenu` field/Supplier/Button producer are read from the actual runtime.

@@ -1,94 +1,124 @@
 {
   "schemaVersion": 1,
-  "checkedDate": "2026-11-01",
-  "sourceBaselineCommit": "641b88a5d0faa9c491371296b3dc50e7f1d4c931",
-  "previousCancelledComponent": "lanmc_world_menu",
+  "checkedDate": "2026-11-03",
+  "sourceBaselineCommit": "ffcd677e3b19de014d974662ce09aa98676cab49",
   "component": {
     "id": "lanmc_pause_actions",
-    "version": "1.0.0",
+    "version": "1.0.1",
+    "sizeBytes": 14405,
+    "sha256": "c77a9ad6fe4506dffd50853d41210c972e0b53437357ac2afa6bad5d74313f6c"
+  },
+  "previousComponent": {
+    "path": "mods/lanmc-pause-actions-1.0.0.jar",
     "sizeBytes": 11473,
     "sha256": "74ae31bb88c6e486f40dd5ee2ab17ac8af5edd672a7c87a2094f3c37ed2614c8"
   },
-  "nativeRuntime": {
+  "nativeVerification": {
+    "status": "PASS",
     "minecraft": "26.3",
     "neoforge": "26.3.0.99",
     "java": 25,
+    "jarSha256": "c77a9ad6fe4506dffd50853d41210c972e0b53437357ac2afa6bad5d74313f6c",
+    "jarSizeBytes": 14405,
+    "nativeProof": {
+      "status": "PASS",
+      "actualMixinVersion": "0.8.7",
+      "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
+      "nativeClassOriginalBytes": 4265,
+      "nativeClassOriginalSha256": "a3c5bf37aac82e360913080768fdf2005506afb9a0124e3466ee0a4d1bf6de7a",
+      "nativeClassTransformedBytes": 5259,
+      "generatedNativeFieldReads": 1,
+      "generatedNativeFieldWrites": 1,
+      "baseline": {
+        "originalActionDispatch": true,
+        "nativeFinalField": true
+      },
+      "execution": {
+        "actualProductionPostAndRender": true,
+        "assertions": 266,
+        "recordingBoundaries": "publish(scope,int), Gui.setScreen, chat, narration, title and connection getter",
+        "rendererStarted": false,
+        "gameMainStarted": false,
+        "actualNativePublishedState": true,
+        "actualNativeGridButtonIdentityGeometryFocus": true,
+        "actualSocialScreenConstructorAndOnClose": true,
+        "worldSettingsActionCalls": 0,
+        "discoveryNotification": "exact success-only Object API notification; throwing helper preserves hosting and feedback"
+      },
+      "fmlEnvironment": "Genuine FMLLoader CLIENT/PROD context constructor plus genuine empty LoadingModList; no discovery or game main",
+      "missingDiscoveryHelperProof": {
+        "actualSocialScreenConstructorAndOnClose": true,
+        "actualNativeGridButtonIdentityGeometryFocus": true,
+        "actualNativePublishedState": true,
+        "gameMainStarted": false,
+        "rendererStarted": false,
+        "recordingBoundaries": "publish(scope,int), Gui.setScreen, chat, narration, title and connection getter",
+        "assertions": 261,
+        "actualProductionPostAndRender": true,
+        "worldSettingsActionCalls": 0,
+        "discoveryNotification": "missing helper preserves hosting and feedback"
+      },
+      "requiredAccessorNegativeCases": [
+        {
+          "failureType": "org.spongepowered.asm.mixin.transformer.throwables.MixinTransformerError",
+          "status": "REJECTED",
+          "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
+          "case": "missing-field"
+        },
+        {
+          "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
+          "status": "REJECTED",
+          "failureType": "org.spongepowered.asm.mixin.transformer.throwables.MixinTransformerError",
+          "case": "wrong-field-type"
+        }
+      ]
+    },
     "nativeRuntimeInput": {
       "clientJarName": "minecraft-client-patched-26.3.0.99.jar",
       "clientJarSha256": "e5190c0484d5ddcc01b8db75ebc37bc52e718147a1aa8bcef83b69e62f2f7838",
       "buttonClassSha256": "a3c5bf37aac82e360913080768fdf2005506afb9a0124e3466ee0a4d1bf6de7a",
       "buttonClassSizeBytes": 4265
-    }
-  },
-  "nativeProof": {
-    "status": "PASS",
-    "actualMixinVersion": "0.8.7",
-    "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
-    "nativeClassOriginalBytes": 4265,
-    "nativeClassOriginalSha256": "a3c5bf37aac82e360913080768fdf2005506afb9a0124e3466ee0a4d1bf6de7a",
-    "nativeClassTransformedBytes": 5259,
-    "generatedNativeFieldReads": 1,
-    "generatedNativeFieldWrites": 1,
-    "baseline": {
-      "originalActionDispatch": true,
-      "nativeFinalField": true
     },
-    "execution": {
-      "actualSocialScreenConstructorAndOnClose": true,
-      "worldSettingsActionCalls": 0,
-      "actualProductionPostAndRender": true,
-      "assertions": 112,
-      "recordingBoundaries": "publish(scope,int), Gui.setScreen, chat, narration, title and connection getter",
-      "rendererStarted": false,
-      "gameMainStarted": false,
-      "actualNativePublishedState": true,
-      "actualNativeGridButtonIdentityGeometryFocus": true
-    },
-    "fmlEnvironment": "Genuine FMLLoader CLIENT/PROD context constructor plus genuine empty LoadingModList; no discovery or game main",
-    "requiredAccessorNegativeCases": [
-      {
-        "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
-        "status": "REJECTED",
-        "failureType": "org.spongepowered.asm.mixin.transformer.throwables.MixinTransformerError",
-        "case": "missing-field"
-      },
-      {
-        "failureType": "org.spongepowered.asm.mixin.transformer.throwables.MixinTransformerError",
-        "status": "REJECTED",
-        "engine": "org.spongepowered.asm.mixin.transformer.MixinTransformer",
-        "case": "wrong-field-type"
-      }
-    ]
+    "scope": "Actual packaged accessor/config and Sponge Mixin engine; actual native button, events and published-state getter. Explicit network/UI-feedback boundaries; no game main, renderer, event bus discovery or user world."
   },
-  "pythonTests": 41,
-  "productionJvmMergeProof": {
-    "status": "PASS",
-    "actualCmlNativeBuildProcess": true,
-    "profile": "neoforge-26.3.0.99",
-    "nativeMainClass": "net.neoforged.fml.startup.Client",
-    "productionCompleteJvmArguments": true,
-    "effectiveFlag": "-Dminecraft.portable.identity.pauseLanRowEnabled=false",
-    "count": 1,
-    "loggingPreserved": true,
-    "harmlessJavaProbe": "FLAG=false\r\nKEEP=unchanged",
-    "minecraftMainStarted": false
+  "actualInstalledBootstrapHandoff": "discovery-bridge-verification.json",
+  "pythonTests": {
+    "publicationAndLibraryAndLogging": 48,
+    "keybinds": 8
   },
-  "actualJavaAgentSuppressionProof": {
-    "status": "PASS",
-    "actualAgentPremainEnabled": true,
-    "propertyAfterPremain": "false",
-    "disabledTransformReturnedNull": true,
-    "positiveControlRowCalls": 1,
-    "falseRestoredReturnsNull": true,
-    "nativePauseClassSha256": "63192342b39deb312399ad5c0014fba31bb523ebda3f5b37f3c97877c6ef6864",
-    "minecraftClassesDefined": 0,
-    "gameStarted": false,
-    "adapterSha256": "81aa8d0f5210ffb2d981ac252df1a4cf4acc39fb8d0428bc1ed830e4797af542",
-    "sourceCommit": "f9b8967",
-    "scope": "Actual installed agent premain plus direct actual native Pause bytearray transformation; no Minecraft class definition/game or access to live registry files"
+  "reproducibleJarBuilds": 2,
+  "controls": {
+    "nativeClientScanned": true,
+    "mappings": 66,
+    "bound": 63,
+    "documentedOverlaps": 18,
+    "presetBytesUnchanged": true
+  },
+  "preservedFiles": [
+    "portable-pack.json",
+    "config/log4j2.xml",
+    "launcher/controls-preset.txt",
+    "launcher/jvm-args.txt",
+    "launcher/pack-owned.txt",
+    "mods/emi-1.1.24-e7edb3a+26.3+neoforge.jar",
+    "mods/iris-neoforge-1.11.7+mc26.3.jar",
+    "mods/sodium-neoforge-0.9.3-beta.1+mc26.3.jar"
+  ],
+  "centralizedTransport": {
+    "fileName": "e4steam-neoforge-mc1.20.2-26.3-v0.3.4-lanmc-native-ui.2.jar",
+    "sha256": "2cfedc07ee3c84b9b980351ea094d5f898c858f37ff46dada24c621061761d2e",
+    "unchanged": true,
+    "includedInPack": false
   },
   "launcherChanges": [],
-  "userWorldsModified": false,
-  "clientServerMainStarted": false,
-  "safetyChangesRequired": false
+  "safetyChangesRequired": false,
+  "safetyReason": "Only notifies the existing metadata publisher after successful native LAN publication; no new terrain/chunk/palette/inventory modification, owner permissions or deferred world actions. Native game-mode/commands/world-setting mutators remain forbidden by the bytecode proof.",
+  "acceptanceScope": {
+    "clientServerMainStarted": false,
+    "rendererStarted": false,
+    "worldOpened": false,
+    "twoParticipantDiscoveryAndJoin": "NOT_RUN",
+    "reason": "Native menu/action acceptance retained; actual packaged callback and installed bootstrap metadata publisher replayed with explicit network/game-service boundaries. No full-client or two-account PASS is claimed."
+  },
+  "priorMenuPolicyVerification": "verification-1.0.0.json"
 }

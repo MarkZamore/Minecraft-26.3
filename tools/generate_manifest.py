@@ -61,8 +61,8 @@ PAUSE_ACTIONS_CONTRACT = {
     "schemaVersion": 1,
     "policyId": "lanmc.pause-actions",
     "modId": "lanmc_pause_actions",
-    "modVersion": "1.0.0",
-    "artifactPath": "mods/lanmc-pause-actions-1.0.0.jar",
+    "modVersion": "1.0.1",
+    "artifactPath": "mods/lanmc-pause-actions-1.0.1.jar",
     "sourceProject": "MarkZamore/Minecraft-26.3",
     "projectUrl": "https://github.com/MarkZamore/Minecraft-26.3/tree/main/tools/pause-actions",
     "screen": "net.minecraft.client.gui.screens.PauseScreen",
@@ -72,6 +72,15 @@ PAUSE_ACTIONS_CONTRACT = {
     "replaceInPlace": True,
     "clientOnly": True,
     "requiredJvmProperties": {"minecraft.portable.identity.pauseLanRowEnabled": "false"},
+    "steamDiscovery": {
+        "publisherClass": "minecraft.portable.identity.PortableSteamDiscoveryHooks",
+        "publisherMethod": "published",
+        "publisherDescriptor": "(Ljava/lang/Object;Ljava/lang/Object;I)V",
+        "notifyAfterSuccessfulNativePublish": True,
+        "optionalAtRuntime": True,
+        "preserveNativePublishOnFailure": True,
+        "transportVersionIndependent": True,
+    },
 }
 PAUSE_ACTIONS_EMBEDDED_CONTRACT = "META-INF/lanmc-pause-actions.json"
 PAUSE_ACTIONS_MIXINS = "lanmc-pause-actions.mixins.json"
@@ -154,7 +163,9 @@ def validate_pause_actions(pack: Path, portable: dict, shipped: list[str]) -> No
     """Require the pack-owned same-button policy independently of its mod lock.
 
     Updating a runtime descriptor, or deleting both a JAR and its lock entry,
-    must not silently restore the world-settings entry or the extra LAN row.
+    must not silently restore the world-settings entry or the extra LAN row,
+    or lose the successful native publication's Steam discovery notification.
+    This contract intentionally contains no Minecraft/e4steam version branch.
     Generic generator fixtures without this source contract remain generic;
     this pack's CI also unconditionally builds/probes the source component.
     """
@@ -175,11 +186,19 @@ def validate_pause_actions(pack: Path, portable: dict, shipped: list[str]) -> No
             raise ValueError("pause-actions metadata is too large")
         return json.loads(data, object_pairs_hook=unique_object)
 
+    def same_typed_value(value, expected):
+        # JSON's true and 1 compare equal in Python. Require exact types through
+        # nested integration policy fields as well as the top-level contract.
+        if type(value) is not type(expected):
+            return False
+        if isinstance(expected, dict):
+            return (value.keys() == expected.keys() and
+                    all(same_typed_value(value[key], item) for key, item in expected.items()))
+        return value == expected
+
     def read_contract(data):
         contract = read_json(data)
-        if (not isinstance(contract, dict) or contract != PAUSE_ACTIONS_CONTRACT or
-                any(type(contract[key]) is not type(value)
-                    for key, value in PAUSE_ACTIONS_CONTRACT.items())):
+        if not same_typed_value(contract, PAUSE_ACTIONS_CONTRACT):
             raise ValueError("pause-actions contract or source project identity differs")
         return contract
 
@@ -222,7 +241,8 @@ def validate_pause_actions(pack: Path, portable: dict, shipped: list[str]) -> No
         with zipfile.ZipFile(pack / rel) as archive:
             names = ("META-INF/neoforge.mods.toml", PAUSE_ACTIONS_EMBEDDED_CONTRACT,
                      PAUSE_ACTIONS_MIXINS, "lanmc/pauseactions/mixin/ButtonActionAccessor.class",
-                     "lanmc/pauseactions/PauseActions.class")
+                     "lanmc/pauseactions/PauseActions.class",
+                     "lanmc/pauseactions/SteamWorldDiscovery.class")
             for name in names:
                 entries = [entry for entry in archive.infolist()
                            if entry.filename.casefold() == name.casefold()]
