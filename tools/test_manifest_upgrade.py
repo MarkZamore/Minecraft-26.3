@@ -46,11 +46,18 @@ class UpgradeManifestTests(unittest.TestCase):
         return json.loads((output / "pack-manifest.json").read_text())
 
     def test_retired_jar_is_exact_hash_metadata_not_an_active_download(self):
-        manifest = self.generate()
-        self.assertEqual([self.legacy], manifest["legacyFiles"])
-        self.assertNotIn("mods/old.jar", [row["path"] for row in manifest["files"]])
-        self.assertNotIn("mods/old.jar", [path for asset in manifest["assets"] for path in asset["covers"]])
-        self.assertEqual(1, manifest["modCount"])
+        # Preserve every real migration: EMI 26.2, the retired World Menu and
+        # Pause Actions 1.0.0. The generic active/legacy guard is shared by all.
+        retired = json.loads((pathlib.Path(__file__).parent / "legacy-files.json").read_text(encoding="utf-8"))["files"]
+        self.assertEqual(3, len(retired))
+        for legacy in retired:
+            with self.subTest(path=legacy["path"]):
+                self.write_lock("legacy-files.json", {"files": [legacy]})
+                manifest = self.generate()
+                self.assertEqual([legacy], manifest["legacyFiles"])
+                self.assertNotIn(legacy["path"], [row["path"] for row in manifest["files"]])
+                self.assertNotIn(legacy["path"], [path for asset in manifest["assets"] for path in asset["covers"]])
+                self.assertEqual(1, manifest["modCount"])
 
     def test_changed_bytes_and_accidentally_retained_old_jar_stop_publication(self):
         original = self.jar.read_bytes()

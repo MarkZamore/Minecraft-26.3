@@ -147,7 +147,8 @@ class PauseActionsPublicationTests(unittest.TestCase):
         mutations = {"translationKey": "menu.options", "screen": "net.minecraft.client.gui.screens.Screen",
                      "lanTranslationKey": "menu.options", "reportsTranslationKey": "menu.options",
                      "replaceInPlace": False, "clientOnly": False,
-                     "sourceProject": "someone/another-project"}
+                     "sourceProject": "someone/another-project",
+                     "modVersion": "1.0.0", "artifactPath": "mods/lanmc-pause-actions-1.0.0.jar"}
         for field, value in mutations.items():
             with self.subTest(field=field):
                 self.write_helper(policy={**self.contract, field: value})
@@ -199,13 +200,6 @@ class PauseActionsPublicationTests(unittest.TestCase):
                 self.write_helper(policy=changed)
                 self.assert_refused()
 
-    def test_old_embedded_contract_cannot_restore_disconnected_native_publication(self):
-        old = {key: value for key, value in self.contract.items() if key != "steamDiscovery"}
-        old["modVersion"] = "1.0.0"
-        old["artifactPath"] = "mods/lanmc-pause-actions-1.0.0.jar"
-        self.write_helper(policy=old)
-        self.assert_refused()
-
     def test_accessor_must_be_required_and_registered_only_on_the_client(self):
         mutations = ({"required": False}, {"client": []}, {"client": ["AnotherAccessor"]},
                      {"server": ["ButtonActionAccessor"]}, {"mixins": ["ButtonActionAccessor"]},
@@ -256,13 +250,6 @@ class PauseActionsPublicationTests(unittest.TestCase):
                 self.refresh_lock()
                 self.assert_refused()
                 old.unlink()
-
-    def test_retired_helper_is_allowed_only_as_exact_hash_legacy_metadata(self):
-        old = {"path": "mods/lanmc-world-menu-1.0.0.jar", "sizeBytes": 5569, "sha256": "1" * 64}
-        (self.pack / "tools/legacy-files.json").write_text(json.dumps({"schemaVersion": 1, "files": [old]}), encoding="utf-8")
-        manifest = self.generate()
-        self.assertEqual([old], manifest["legacyFiles"])
-        self.assertNotIn(old["path"], [row["path"] for row in manifest["files"]])
 
     def test_different_loader_cannot_silently_skip_the_required_component(self):
         self.portable["loader"] = {"type": "fabric", "version": "0.19.3"}

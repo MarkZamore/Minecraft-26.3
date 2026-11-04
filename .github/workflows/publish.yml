@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # No disk-freeing step and no fetch of oversized files: this pack is a
-      # manifest and one megabyte of mod. Everything it ships is in the tree.
+      # small locked NeoForge pack. Everything it ships is in the tree.
       - name: Checkout
         uses: actions/checkout@v7
         with:
